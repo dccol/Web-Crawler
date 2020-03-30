@@ -5,13 +5,27 @@
 #ifndef DEQUE_H
 #define DEQUE_H
 
-#include "url_parser.h"
+#include "../url_parser/url_parser.h"
 
-typedef struct data data_t;
-
-typedef struct deque deque_t;
+typedef struct data {
+    char *url;
+} data_t;
 
 typedef struct node node_t;
+
+struct node{
+    data_t data;
+    node_t *next;
+    node_t *prev;
+};
+
+
+typedef struct deque {
+    int size;
+    node_t *head;
+    node_t *foot;
+} deque_t;
+
 
 deque_t *new_deque();
 

@@ -8,8 +8,9 @@
 
 #include "deque.h"
 
-struct data {
-	parsed_url_t url;
+
+/*struct data {
+	const char *url;
 };
 
 struct node {
@@ -22,7 +23,7 @@ struct deque {
     int size;
     node_t *head;
 	node_t *foot;
-};
+};*/
 
 
 deque_t *new_deque() {

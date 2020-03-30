@@ -30,7 +30,7 @@ _is_scheme_char(int c)
  * See RFC 1738, 3986
  */
 parsed_url_t* parse_url(const char *url){
-    struct parsed_url *purl;
+    parsed_url_t *purl;
     const char *tmpstr;
     const char *curstr;
     int len;
