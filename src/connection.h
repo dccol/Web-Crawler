@@ -14,12 +14,14 @@
 #include <assert.h>
 #include <unistd.h>
 
-#include "../lib/url_parser.h"
+#include "../lib/url_parser/url_parser.h"
+#include "../lib/gumbo/gumbo.h"
 #include "HTTPrequest.h"
+#include "html_parser.h"
 
 #define MAX_RESPONSE_SIZE 100000
 
 // creates a TCP connection between the client socket and the host server socket
-void set_up_connection(parsed_url_t *host_server);
+void set_up_connection(char *url, int client_socket, deque_t *links);
 
 #endif

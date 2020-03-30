@@ -10,42 +10,35 @@
 #include <assert.h>
 #include <unistd.h>
 
-#include "../lib/url_parser.h"
+#include "../lib/url_parser/url_parser.h"
+#include "../lib/gumbo/gumbo.h"
 
 #include "connection.h"
 
 // TO DO
-// Parse URL into into domain name and path
-// Use this struct to build the initial request
+// Parse URL into into domain name and path X
+// Use this struct to build the initial request X
 // Parse the HTML response for <a> tags
 // If path is different to current page -> request the new page
 
 
-//parsed_url_t* url_parse(char *inputURL);
-//void generateRequest();
-//void parseHTML();
+
 
 int main(int argc, char *argv[]) {
-    parsed_url_t *urlT = parse_url(argv[1]);
-    set_up_connection(urlT);
+    parsed_url_t *host_server = parse_url(argv[1]);
+
+    int client_socket;
+    //char request[1024];
+    //char response[MAX_RESPONSE_SIZE+1];
+    deque_t *links = new_deque();
+
+    set_up_connection(argv[1], client_socket, links);
+
+    //send_receive(client_socket, request, host_server, response);
+    //printf("The request:\n%s", request);
+    //printf("Response from the server:\n%s\n", response);
     return 0;
 }
-
-/*parsed_url_t* url_parse(char *inputURL) {
-
-    parsed_url_t *url = parse_url(inputURL);
-
-    // print host server information
-    printf("The Host Name: %s\n", url->host);
-    if(url->path != NULL){
-        printf("The Path: %s\n\n", url->path);
-    }
-    if(url->port){
-        printf("The Port: %s\n\n", url->port);
-    }
-
-    return url;
-}*/
 
 
 

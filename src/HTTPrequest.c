@@ -23,3 +23,37 @@ void generate_request(parsed_url_t *host_server, char *request){
 
 }
 
+void send_receive(int client_socket, char *request, parsed_url_t *host_server, char *response){
+
+    generate_request(host_server, request);
+    printf("The request:\n%s", request);
+
+    send(client_socket, request, sizeof(request), 0);
+    printf("Request sent successfully\n");
+
+    recv(client_socket, &response, sizeof(response), 0);
+    printf("Response from the server:\n%s\n", response);
+
+    close(client_socket);
+}
+/*
+// generate a HTTP request from the host server information
+char request[1024];
+generate_request(host_server, request);
+printf("The request:\n%s\n", request);
+
+// prepare where to store the response
+char response[MAX_RESPONSE_SIZE+1];
+
+// send request
+send(client_socket, request, sizeof(request), 0);
+//send_receive(client_socket, request, host_server, response);
+
+// receive response
+recv(client_socket, &response, sizeof(response), 0);
+
+printf("Response from the server:\n%s\n", response);
+
+close(client_socket);
+
+*/
