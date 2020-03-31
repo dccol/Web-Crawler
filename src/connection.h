@@ -24,4 +24,7 @@
 // creates a TCP connection between the client socket and the host server socket
 void set_up_connection(char *url, int client_socket, deque_t *links);
 
+int get_content_length(char *head);
+
+int response_code(char *head);
 #endif

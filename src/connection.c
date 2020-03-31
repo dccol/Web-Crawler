@@ -57,26 +57,89 @@ void set_up_connection(char *url, int client_socket, deque_t *links) {
 
     // receive response
     // TO DO: read number of bytes in content length header
-    // TO DO: separeate header and body
-    if(recv(client_socket, &response, sizeof(response), 0) < 0){
+    // TO DO: separate header and body
+    size_t initial_bytes_recv = 0;
+    /*if(recv(client_socket, &response, sizeof(response), 0) < 0){
         perror("ERROR reading from socket\n");
         exit(0);
-    }
-    /*FILE *response_test = fdopen(client_socket, "r");
-    char dest[MAX_RESPONSE_SIZE+1];
-    fread(dest, 1, sizeof(response_test), response_test);
+    }*/
 
-    printf("Response from the server:\n%s\n", dest);
-    close(client_socket);
-    //printf("Socket closed\n\n");
+    // keep recv until the header has been received
+    while(initial_bytes_recv < MAX_RESPONSE_SIZE) {
+        size_t chunk = recv(client_socket, &response, sizeof(response), 0);
+        initial_bytes_recv += chunk;
+        printf("%zu bytes read\n", initial_bytes_recv);
+
+        // if header is received break
+        if(strstr(response, "\r\n\r\n")){
+            break;
+        }
+    }
+
+    printf("Header received!\n");
+
+    // split the output into head and body
+    char *body = strstr(response, "\r\n\r\n");
+    // size of body = bytes read - size of header
+
+    int header_size = strlen(response) - strlen(body);
+    printf("Header size: %d\n", header_size);
+    int body_size = strlen(response) - header_size - sizeof("\r\n\r\n") + 1; // plus 1 for '\0'?
+    printf("Body size: %d\n", body_size);
+
+    char *head = malloc(header_size);
+    strncpy(head, response, header_size);
+
+    printf("Head:\n%s", head);
+    printf("\n");
+    printf("Body: %s\n", body);
+
+    // check the response code of the response.
+    char *head_copy = malloc(header_size);
+    strncpy(head_copy, response, header_size);
+    int code = response_code(head_copy);
+    printf("Code: %d\n", code);
+
+    // If its 200 then proceed with ensuring all the content has been received and eventually parse
+    if(code == 200) {
+
+        printf("Content Received: %d\n", body_size);
+
+        // check the content-length hear to see how many bytes should have been received
+        int content_length = get_content_length(head);
+        printf("Content-Length: %d\n", content_length);
+
+        // check this bit
+        // if the bytes (body_size) received is less than expected continue to received data until
+        while (body_size < content_length) {
+            printf("Content Received: %d\n", body_size);
+            printf("Content-Length: %d\n", content_length);
+            size_t chunk = recv(client_socket, &body, sizeof(body), 0);
+            printf("chunk = %zu\n", chunk);
+            body_size += chunk;
+        }
+        printf("exited\n");
+        printf("Body: %s\n", body);
+
+        // once all the bytes have been received, safe to close the socket
+        close(client_socket);
+    }
+
+    // Otherwise skip the parse and try the next url in the queue
+    else{
+        return;
+    }
+
+
 
     // split the response into headers and body (look for \r\n\r\n)
     // record the expected content length, and compare to actual content legnth
     // if(num_bytes_received == content-legnth_header) => Parse body
-    //  else => recv until num_bytes_received == content-legnth_header */
+    //  else => recv until num_bytes_received == content-legnth_header
 
 
-    /** PARSE THE HTML **/
+    /** PARSE THE HTML
+     * to get the href to crawl through**/
     GumboOutput* output = gumbo_parse_with_options(&kGumboDefaultOptions, response, sizeof(response));
 
     // find the links and store in a queue
@@ -87,18 +150,19 @@ void set_up_connection(char *url, int client_socket, deque_t *links) {
     // take each link and (recurse the process)
     while(deque_size(links)){
         data_t data = deque_pop(links);
-        printf("Next link: %s\n", data.url);
+        printf("Next link: %80s\t", data.url);
         parsed_url_t *host_server_next = parse_url(data.url);
 
+        /** change this logic **/
         // if the host names are the same, follow the url
         if(strcmp(host_server->host, host_server_next->host) == 0) {
-            printf("Success\n");
+            printf("Fetched\n");
 
             int client_socket_next;
-            set_up_connection(data.url, client_socket_next, links);
+            //set_up_connection(data.url, client_socket_next, links);
         }
         else{
-            printf("Failure\n");
+            printf("Skipped\n");
         }
         // otherwise try the next url in the queue
 
@@ -107,4 +171,33 @@ void set_up_connection(char *url, int client_socket, deque_t *links) {
 
     }
 
+}
+
+int get_content_length(char *head){
+    // get content-length from head
+    char *where_content_length_is = strstr(head, "Content-Length:");
+
+    char *token = strtok(where_content_length_is, "\n");
+    //printf("\n%s\n", token);
+
+    token = strtok(token, " ");
+    //printf("\n%s\n", token);
+
+    token = strtok(NULL, " ");
+    //printf("\n%s\n\n", token);
+
+    int content_length = atoi(token);
+    //printf("Content Length: %d\n", content_length);
+
+    return content_length;
+}
+
+int response_code(char *head){
+    char *token = strtok(head, " ");
+
+    token = strtok(NULL, " ");
+
+    int code = atoi(token);
+
+    return code;
 }
