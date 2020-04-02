@@ -20,11 +20,16 @@
 #include "html_parser.h"
 
 #define MAX_RESPONSE_SIZE 100000
+#define MAX_RECV_VALUE 20000
+#define BLANK_LINE_DELIM "\r\n\r\n"
 
 // creates a TCP connection between the client socket and the host server socket
 void set_up_connection(char *url, int client_socket, deque_t *links);
 
 int get_content_length(char *head);
 
+char *get_content_type(char *head);
+
 int response_code(char *head);
+
 #endif

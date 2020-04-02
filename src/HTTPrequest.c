@@ -19,14 +19,18 @@ void generate_request(parsed_url_t *host_server, char *request){
     char * user_agent = "dccol";
     strcat(request, "User-Agent: ");
     strcat(request, user_agent);
-    strcat(request, "\r\n\r\n");
+    strcat(request, "\r\n");
 
+    char * connection = "close";
+    strcat(request, "Connection: ");
+    strcat(request, connection);
+    strcat(request, "\r\n\r\n");
 }
 
 void send_receive(int client_socket, char *request, parsed_url_t *host_server, char *response){
 
     generate_request(host_server, request);
-    printf("The request:\n%s", request);
+    printf("THE REQUEST:\n%s", request);
 
     send(client_socket, request, sizeof(request), 0);
     printf("Request sent successfully\n");
