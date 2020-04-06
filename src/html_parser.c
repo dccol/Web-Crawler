@@ -8,7 +8,7 @@ void search_for_links(GumboNode* node, deque_t *queued_links, char *current_page
     GumboAttribute *href;
     if (node->v.element.tag == GUMBO_TAG_A &&
         (href = gumbo_get_attribute(&node->v.element.attributes, HREF))) {
-        printf("\nLink Found: %s\n", href->value);
+        //printf("\nLink Found: %s\n", href->value);
 
         // if the link has the accepted syntax continue
         if(validate_url_syn(href->value)) {
@@ -26,7 +26,7 @@ void search_for_links(GumboNode* node, deque_t *queued_links, char *current_page
             // be aware that the path must begin with the '/' for this to work,
             // hence when you change the url library ensure the path always has the '/' to begin
             rfc_func(base->auth, base->path, href->value, t);
-            printf("T: %s\n", t);
+            //printf("T: %s\n", t);
 
             // validate authority match
             if(validate_url_authority(base, t) == 1) {
@@ -113,7 +113,7 @@ void add_to_queue(deque_t *deque, const char *href_value){
     strcpy(url, href_value);
 
     data->url = url;
-    printf("Inserting %s\n\n", data->url);
+    //printf("Inserting %s\n\n", data->url);
     deque_insert(deque, *data);
 }
 
@@ -203,9 +203,9 @@ void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
     // sort of a fix for now
     // if r is relative (no scheme) => r_path is r
     int type = determine_relative_type(r, &r_auth, r_path);
-    printf("the type: %d\n", type);
-    printf("r_auth: %s\n", r_auth);
-    printf("r_path: %s\n", r_path);
+    //printf("the type: %d\n", type);
+    //printf("r_auth: %s\n", r_auth);
+    //printf("r_path: %s\n", r_path);
 
 
     // the alg
@@ -242,7 +242,7 @@ void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
                     strcat(t_path, r_path);
                 } else {
                     merge(b_auth, b_path, r_path, t_path);
-                    printf("Merge: %s\n", t_path);
+                    //printf("Merge: %s\n", t_path);
                 }
             }
             strcat(t_auth, b_auth);
@@ -263,8 +263,8 @@ int determine_relative_type(const char *r, char **r_auth, char *r_path){
             char regex_implied_protocol[] = "//%[^/]%[^\n]";
             *r_auth = (char *)malloc(sizeof(char) * 100);
             sscanf(r, regex_implied_protocol, *r_auth, r_path);
-            printf("r_auth in func: %s\n", *r_auth);
-            printf("r_path: %s\n", r_path);
+            //printf("r_auth in func: %s\n", *r_auth);
+            //printf("r_path: %s\n", r_path);
             return IMPLIED_PROTO;
         }
             // if no "//" then its implied protocol and authority

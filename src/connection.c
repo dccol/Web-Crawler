@@ -6,7 +6,7 @@
 void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     // create the client socket to connect to the server socket
     //int client_socket;
-    printf("Fetching %100s\t", url);
+    printf("%s\t", url);
     add_to_queue(fetched_links, url);
 
     /** CREATING A SOCKET CONNECTION **/
@@ -49,7 +49,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     char request[REQUEST_SIZE];
     bzero(request, sizeof(request));
     generate_request(base, request);
-    printf("\nTHE REQUEST:\n%s\n", request);
+    //printf("\nTHE REQUEST:\n%s\n", request);
 
     char response[MAX_RESPONSE_SIZE+1];
     bzero(response, sizeof(response));
@@ -99,7 +99,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     char *header = (char *)malloc(header_size);
     strncpy(header, response, header_size);
 
-    printf("Headers:\n%s\n", header);
+    //printf("Headers:\n%s\n", header);
     //printf("\n");
     //printf("Current Body: %s\n", body);
 
@@ -173,11 +173,11 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
 
     // If the response code is not 200 or the content-type is not MIME, return, process next url
     else{
-        printf("Unsuccessful\tCode %d\tType: %s\n", code, type);
+        //printf("Unsuccessful\tCode %d\tType: %s\n", code, type);
         close(client_socket);
         return;
     }
-    printf("Successful\tCode %d\tType: %s\n", code, type);
+    //printf("Successful\tCode %d\tType: %s\n", code, type);
 
 
     /** PARSE THE HTML
