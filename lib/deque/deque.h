@@ -5,7 +5,6 @@
 #ifndef DEQUE_H
 #define DEQUE_H
 
-#include "../url_parser/url_parser.h"
 
 typedef struct data {
     char *url;
