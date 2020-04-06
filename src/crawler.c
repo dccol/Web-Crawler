@@ -19,8 +19,6 @@ int main(int argc, char *argv[]) {
     check_EOS(url);
     //printf("The updated url :%s\n", url);
 
-    uri_t *base = parse_uri(url);
-
     deque_t *links = new_deque();
     deque_t *fetched_links = new_deque();
 
@@ -35,10 +33,11 @@ int main(int argc, char *argv[]) {
 
         set_up_connection(data.url, links, fetched_links);
     }
-    //send_receive(client_socket, request, host_server, response);
-    //printf("The request:\n%s", request);
-    //printf("Response from the server:\n%s\n", response);
-    //printf("All links crawled\n");
+
+    free_deque(links);
+    free_deque(fetched_links);
+
+    printf("All links crawled\n");
     return 0;
 }
 

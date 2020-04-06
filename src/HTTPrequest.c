@@ -3,10 +3,8 @@
 
 
 void generate_request(uri_t *base, char *request){
-    strcat(request, "GET /");
-    if(base->path != NULL){
-        strcat(request, base->path);
-    }
+    strcat(request, "GET ");
+    strcat(request, base->path);
     strcat(request, " HTTP/1.1\r\n");
 
     // add Host: header

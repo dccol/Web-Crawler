@@ -6,7 +6,7 @@
 void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     // create the client socket to connect to the server socket
     //int client_socket;
-    printf("%s\t", url);
+    printf("%s\n", url);
     add_to_queue(fetched_links, url);
 
     /** CREATING A SOCKET CONNECTION **/
@@ -16,7 +16,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     int client_socket;
 
     if ((client_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        perror("\n Socket creation error \n");
+        printf("\n Socket creation error \n");
         exit(0);
     }
 
@@ -40,43 +40,44 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
 
     // connect to the remote address
     if (connect(client_socket, (struct sockaddr *) &remote_address, sizeof(remote_address)) < 0) {
-        perror("\nConnection failed\n");
+        printf("\nConnection failed\n");
         exit(0);
     }
 
     /** SENDING A REQUEST **/
     // generate a HTTP request from the host server information
-    char request[REQUEST_SIZE];
-    bzero(request, sizeof(request));
-    generate_request(base, request);
-    //printf("\nTHE REQUEST:\n%s\n", request);
+    char request_buffer[REQUEST_SIZE];
+    bzero(request_buffer, sizeof(request_buffer));
+    generate_request(base, request_buffer);
+    //printf("\nTHE REQUEST:\n%s\n", request_buffer);
 
-    char response[MAX_RESPONSE_SIZE+1];
-    bzero(response, sizeof(response));
 
     // send request
-    if(send(client_socket, request, sizeof(request), 0) <0 ){
-        perror("ERROR writing to socket\n");
+    if(send(client_socket, request_buffer, sizeof(request_buffer), 0) < 0 ){
+        printf("ERROR writing to socket\n");
         exit(0);
     }
-    //send_receive(client_socket, request, host_server, response);
+    //printf("SENT\n");
 
-    // receive response
-    // TO DO: read number of bytes in content length header
-    // TO DO: separate header and body
+
+
+    char response[MAX_RESPONSE_SIZE];
+    bzero(response, sizeof(response));
+    //printf("clean response: %s\n", response );
+
     size_t initial_bytes_recv = 0;
-    /*if(recv(client_socket, &response, sizeof(response), 0) < 0){
-        perror("ERROR reading from socket\n");
-        exit(0);
-    }*/
 
     // keep recv until the header has been received
     while(initial_bytes_recv < MAX_RESPONSE_SIZE) {
         size_t chunk = recv(client_socket, &response, sizeof(response), 0);
-        initial_bytes_recv += chunk;
+        initial_bytes_recv = initial_bytes_recv + chunk;
         //printf("The initial recv received %zu bytes\n", initial_bytes_recv);
-
+        if(chunk < 0){
+            printf("ERROR reading from socket\n");
+            exit(0);
+        }
         // if header is received break
+        //printf("size of response %lu\n", strlen(response));
         if(strstr(response, BLANK_LINE_DELIM)){
             //printf("Header received!\n");
             break;
@@ -103,16 +104,16 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     //printf("\n");
     //printf("Current Body: %s\n", body);
 
-
+    /** look into these malloc **/
     // check the response code of the response.
-    char *head_copy_code = (char *)malloc(header_size);
+    char *head_copy_code = (char *)malloc(sizeof(*head_copy_code) * header_size);
     strncpy(head_copy_code, response, header_size);
     int code = get_response_code(head_copy_code);
     //printf("\nCode: %d\n\n", code);
     free(head_copy_code);
 
     // check the content type of the response
-    char *head_copy_type = (char *)malloc(header_size);
+    char *head_copy_type = (char *)malloc(sizeof(*head_copy_type) * header_size);
     strncpy(head_copy_type, response, header_size);
     char *type = get_content_type(head_copy_type);
     //printf("Type: %s\n\n", type);
@@ -140,19 +141,22 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
         strcpy(html_buffer, body);
 
         // create a tmp storage buffer to store new incoming chunks
-        char tmp[MAX_RECV_VALUE];
-
-
+        char tmp[MAX_RESPONSE_SIZE];
+        bzero(tmp, sizeof(tmp));
         // while the size of html buffer is is less than expected content length, continue to receive data
         while (strlen(html_buffer) < content_length) {
 
             size_t chunk = recv(client_socket, &tmp, sizeof(tmp), 0);
             //printf("chunk = %zu\n", chunk);
-
-            // for chunked data without content length header
-            /*if(chunk == 0){
+            if(chunk < 0){
+                printf("ERROR reading from socket\n");
+                exit(0);
+            }
+            if(chunk == 0){
+                printf("Transfer encoding -Final Buffer length: %lu\n", strlen(html_buffer));
                 break;
-            }*/
+            }
+
 
             // append the the new data into the main buffer
             strcat(html_buffer, tmp);

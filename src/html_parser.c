@@ -39,6 +39,8 @@ void search_for_links(GumboNode* node, deque_t *queued_links, char *current_page
 
                     // insert the link into the queue
                     add_to_queue(queued_links, t);
+
+                    free(base);
                 }
             }
         }
@@ -137,6 +139,8 @@ int queue_check(deque_t *fetched_links, const char *href_value){
         }
     }
     // if compared all fetched urls and no match, return 1 success
+    free(data);
+    free(url);
     return 1;
 }
 
@@ -177,6 +181,7 @@ void merge(char *b_auth, char *b_path, char *r_path, char *t_path){
             strcat(t_path, all_but_last);
             strcat(t_path, r_path);
             //printf("The result of merge: %s\n", t_path);
+            free(all_but_last);
         }
             // otherwise just append straight on
         else{
@@ -249,6 +254,9 @@ void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
         }
     }
     build_t(t, t_scheme, t_auth, t_path);
+
+    // potential break idk
+    free(r_auth);
 }
 
 int determine_relative_type(const char *r, char **r_auth, char *r_path){
