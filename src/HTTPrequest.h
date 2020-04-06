@@ -14,10 +14,8 @@
 #include <assert.h>
 #include <unistd.h>
 
-#include "../lib/url_parser/url_parser.h"
+#include "url_parse.h"
 
-void generate_request(parsed_url_t *host_server, char *request);
-
-void send_receive(int client_socket, char *request, parsed_url_t *host_server, char *response);
+void generate_request(uri_t *base, char *request);
 
 #endif
