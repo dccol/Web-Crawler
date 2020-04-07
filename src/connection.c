@@ -6,7 +6,7 @@
 void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     // create the client socket to connect to the server socket
     //int client_socket;
-    printf("%s\t", url);
+    printf("%100s\t", url);
     add_to_queue(fetched_links, url);
 
     /** CREATING A SOCKET CONNECTION **/
