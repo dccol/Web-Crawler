@@ -20,7 +20,7 @@
 #include "html_parser.h"
 
 #define MAX_RESPONSE_SIZE 100000
-#define REQUEST_SIZE 300
+#define REQUEST_SIZE 1000
 #define BLANK_LINE_DELIM "\r\n\r\n"
 
 
