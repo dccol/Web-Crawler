@@ -14,8 +14,14 @@ uri_t *parse_uri(char *url);
 // appends a trailing '/' to the given url
 
 int main(int argc, char *argv[]) {
+    printf("hello world\n");
 
-    char *url = argv[1];
+    printf("%lu\n", strlen(argv[1]));
+    printf("argv: %s\n", argv[1]);
+    char *url = (char*)malloc(sizeof(char) * strlen(argv[1]) + 1);
+    strcpy(url, argv[1]);
+    printf("url: %s\n", url);
+
     check_EOS(url);
     //printf("The updated url :%s\n", url);
 

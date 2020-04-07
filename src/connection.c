@@ -89,7 +89,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
      * Allows header values to be parsed
      * Allows ability to determine whether all bytes have been read or whether further reading needs to take place
      */
-    char *body = strstr(response, BLANK_LINE_DELIM);
+    char *body = strstr(response, BLANK_LINE_DELIM)+4;
 
     int header_size = strlen(response) - strlen(body);
     //printf("Header size: %d\n", header_size);
@@ -97,7 +97,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     //int body_size = strlen(response) - header_size - sizeof(BLANK_LINE_DELIM) + 1; // plus 1 for '\0'?
     //printf("Body size: %d\n\n", body_size);
 
-    char *header = (char *)malloc(header_size);
+    char *header = (char *)malloc(sizeof(char) * header_size);
     strncpy(header, response, header_size);
 
     //printf("Headers:\n%s\n", header);
@@ -134,7 +134,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
 
         // check the content-length hear to see how many bytes should have been received
         int content_length = get_content_length(header);
-        //printf("Content-Length: %d\n", content_length);
+        printf("Content-Length: %d\n", content_length);
         free(header);
 
         // copying the already received bytes into a buffer of maximum response size
@@ -167,7 +167,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
             //printf("Buffer length: %lu\n", strlen(html_buffer));
 
         }
-        //printf("Final Buffer length: %lu\n", strlen(html_buffer));
+        printf("Final Buffer length: %lu\n", strlen(html_buffer));
         //printf("The entire data: %s\n", html_buffer);
         //printf("All data received\n\n");
 
