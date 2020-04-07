@@ -301,6 +301,8 @@ int determine_relative_type(const char *r, char **r_auth, char *r_path){
 }
 
 void build_t(char *t, char *scheme, char *auth, char *path){
+
+    bzero(t, sizeof(t));
     strcat(t, scheme);
     strcat(t, auth);
     strcat(t, path);
