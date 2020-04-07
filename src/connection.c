@@ -53,7 +53,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     char request_buffer[REQUEST_SIZE];
     bzero(request_buffer, sizeof(request_buffer));
     generate_request(base, request_buffer);
-    //printf("\nTHE REQUEST:\n%s\n", request_buffer);
+    printf("\nTHE REQUEST:\n%s\n", request_buffer);
 
 
     // send request
@@ -105,7 +105,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     strncpy(header, response, header_size);
     header[strlen(header)] = '\0';
 
-    //printf("Headers:\n%s\n", header);
+    printf("Headers:\n%s\n", header);
     //printf("\n");
     //printf("Current Body: %s\n", body);
 
