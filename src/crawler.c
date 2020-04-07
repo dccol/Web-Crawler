@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
     strcpy(url, argv[1]);
     printf("url: %s\n", url);
 
-    check_EOS(url);
+    //check_EOS(url);
     //printf("The updated url :%s\n", url);
 
     deque_t *links = new_deque();
