@@ -116,7 +116,6 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     head_copy_code[header_size] = '\0';
     int code = get_response_code(head_copy_code);
     //printf("\nCode: %d\n\n", code);
-    free(head_copy_code);
 
     // check the content type of the response
     char *head_copy_type = (char *)malloc(sizeof(*head_copy_type) * (header_size + 1));
@@ -124,7 +123,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     head_copy_type[header_size] = '\0';
     char *type = get_content_type(head_copy_type);
     //printf("Type: %s\n\n", type);
-    free(head_copy_type);
+
 
     /** Now that we know the html type is valid and the code is 200
      *  Continue reading data until the size of the response buffer is equal to the content-length value
@@ -189,6 +188,8 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     else {
         printf("Unsuccessful\tCode %d\tType: %s\n", code, type);
     }
+    free(head_copy_type);
+    free(head_copy_code);
 
 
     /** PARSE THE HTML
