@@ -240,6 +240,7 @@ void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
         // built t
         build_t(t, t_scheme, t_auth, t_path);
 
+        free(r_auth);
         free(r_path);
         return;
     }
@@ -280,6 +281,8 @@ void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
     free(r_path);
 }
 
+
+// check this lots of the urls have double // in the test env
 int determine_relative_type(const char *r, char **r_auth, char *r_path){
 
     // if no scheme in r
