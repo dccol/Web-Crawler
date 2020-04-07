@@ -8,7 +8,7 @@ void search_for_links(GumboNode* node, deque_t *queued_links, char *current_page
     GumboAttribute *href;
     if (node->v.element.tag == GUMBO_TAG_A &&
         (href = gumbo_get_attribute(&node->v.element.attributes, HREF))) {
-        //printf("\nLink Found: %s\n", href->value);
+        printf("\nLink Found: %s\n", href->value);
 
         // if the link has the accepted syntax continue
         if(validate_url_syn(href->value)) {
@@ -25,9 +25,9 @@ void search_for_links(GumboNode* node, deque_t *queued_links, char *current_page
 
             // be aware that the path must begin with the '/' for this to work,
             // hence when you change the url library ensure the path always has the '/' to begin
-            //printf("href_value: %s\n", href->value);
+            printf("href_value: %s\n", href->value);
             rfc_func(base->auth, base->path, href->value, t);
-            //printf("T: %s\n", t);
+            printf("T: %s\n", t);
 
             // validate authority match
             if(validate_url_authority(base, t) == 1) {
