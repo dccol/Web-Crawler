@@ -231,6 +231,8 @@ void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
 
         strcat(t_auth, r_auth);
         printf("t_auth: %s\n\n", t_auth);
+        printf("t_path: %s\n\n", t_path);
+        printf("r_path: %s\n\n", r_path);
         strcat(t_path, r_path);
         printf("t_path: %s\n\n", t_path);
 
