@@ -127,8 +127,8 @@ void add_to_queue(deque_t *deque, const char *href_value){
 
 int queue_check(deque_t *fetched_links, const char *href_value){
 
-    data_t *data = (data_t *) malloc(sizeof(data));
-    char *url = malloc(sizeof(url) * strlen(href_value) + 1);
+    data_t *data = (data_t *) malloc(sizeof(*data));
+    char *url = malloc(sizeof(url) * (strlen(href_value) + 1));
     strcpy(url, href_value);
 
     data->url = url;
@@ -138,6 +138,8 @@ int queue_check(deque_t *fetched_links, const char *href_value){
 
         // if the urls are the same, return -1 failure
         if(strcmp(data->url, curr->data.url) == 0){
+            free(data);
+            free(url);
             return -1;
         }
         else{
