@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 
         // get the next link from the queue
         data_t data = deque_pop(links);
-        printf("Next link: %80s\n", data.url);
+        //printf("Next link: %80s\n", data.url);
 
         set_up_connection(data.url, links, fetched_links);
     }

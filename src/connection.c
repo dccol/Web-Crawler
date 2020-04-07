@@ -13,8 +13,8 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
 
     uri_t *base = parse_uri(url);
 
-    printf("base auth: %s\n", base->auth);
-    printf("base path: %s\n", base->path);
+    //printf("base auth: %s\n", base->auth);
+    //printf("base path: %s\n", base->path);
 
 
     int client_socket;
@@ -56,7 +56,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     bzero(request_buffer, sizeof(request_buffer));
     generate_request(base, request_buffer);
     free(base);
-    printf("\nTHE REQUEST:\n%s\n", request_buffer);
+    //printf("\nTHE REQUEST:\n%s\n", request_buffer);
 
 
     // send request
@@ -64,7 +64,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
         printf("ERROR writing to socket\n");
         exit(0);
     }
-    printf("SENT\n");
+    //printf("SENT\n");
 
 
 
@@ -78,7 +78,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     while(initial_bytes_recv < MAX_RESPONSE_SIZE) {
         size_t chunk = recv(client_socket, &response, sizeof(response), 0);
         initial_bytes_recv = initial_bytes_recv + chunk;
-        printf("The initial recv received %zu bytes\n", initial_bytes_recv);
+        //printf("The initial recv received %zu bytes\n", initial_bytes_recv);
         if(chunk < 0){
             printf("ERROR reading from socket\n");
             exit(0);
@@ -143,7 +143,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
 
     // check the content-length hear to see how many bytes should have been received
     int content_length = get_content_length(header);
-    printf("Content-Length: %d\n", content_length);
+    //printf("Content-Length: %d\n", content_length);
     free(header);
 
     // copying the already received bytes into a buffer of maximum response size
@@ -176,7 +176,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
         //printf("Buffer length: %lu\n", strlen(html_buffer));
 
     }
-    printf("Final Buffer length: %lu\n", strlen(html_buffer));
+    //printf("Final Buffer length: %lu\n", strlen(html_buffer));
     //printf("The entire data: %s\n", html_buffer);
     //printf("All data received\n\n");
 
