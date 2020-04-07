@@ -8,9 +8,8 @@ void generate_request(uri_t *base, char *request){
     strcat(request, " HTTP/1.1\r\n");
 
     // add Host: header
-    char* host_name = base->auth;
     strcat(request, "Host: ");
-    strcat(request, host_name);
+    strcat(request, base->auth);
     strcat(request, "\r\n");
 
     // add User-Agent: header

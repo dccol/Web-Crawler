@@ -101,10 +101,12 @@ int validate_url_authority(uri_t *base, char *href_value){
 
     // if the rest of the components are the same => success
     if((strcmp(base_split, href_split) == 0)){
+        free(href_info);
         return 1;
     }
     // otherwise failure
     else{
+        free(href_info);
         return -1;
     }
 }

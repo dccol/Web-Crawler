@@ -3,7 +3,8 @@
 
 uri_t *parse_uri(char *url){
     char regex_str[] = "http://%[^/]%[^\n]";
-    uri_t *base = (uri_t*)malloc(sizeof(*base) + 1);
+    uri_t *base = (uri_t*)malloc(sizeof(*base));
+    assert(base!=NULL);
 
     sscanf(url, regex_str, base->auth, base->path);
     //printf("base auth %s\n", base->auth);
