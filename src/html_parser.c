@@ -304,6 +304,7 @@ void build_t(char *t, char *scheme, char *auth, char *path){
     strcat(t, scheme);
     strcat(t, auth);
     strcat(t, path);
+    printf("The build T: %s\n\n", t);
 }
 
 
