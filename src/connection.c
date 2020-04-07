@@ -13,6 +13,10 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
 
     uri_t *base = parse_uri(url);
 
+    printf("base auth: %s\n", base->auth);
+    printf("base path: %s\n", base->path);
+
+
     int client_socket;
 
     if ((client_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
