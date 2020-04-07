@@ -176,8 +176,8 @@ void merge(char *b_auth, char *b_path, char *r_path, char *t_path){
 
             //printf("basepath: %s\n", b_path);
 
-            char* all_but_last = (char *)calloc(sizeof(char) * strlen(b_path) + 1);
-            //bzero(all_but_last, sizeof(all_but_last));
+            char* all_but_last = (char *)malloc(sizeof(char) * strlen(b_path) + 1);
+            bzero(all_but_last, (sizeof(char) * strlen(b_path) + 1));
 
             int all_but_last_len = strlen(b_path) - strlen(strrchr(b_path, '/')) + 1; // = 5
             //printf("allbutlast len : %d\n", all_but_last_len);
@@ -203,7 +203,7 @@ void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
     // gonna need a way to proper split up the hrefs
     char *r_auth = NULL;
     char *r_path = (char *)malloc(sizeof(char) * 1000);
-    bzero(r_path, sizeof(r_path));
+    bzero(r_path, (sizeof(char) * 1000));
 
     char t_scheme[] = HTTP;
 
