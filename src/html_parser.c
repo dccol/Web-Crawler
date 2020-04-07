@@ -217,14 +217,17 @@ void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
     // if r is relative (no scheme) => r_path is r
     int type = determine_relative_type(r, &r_auth, r_path);
     printf("the type: %d\n", type);
+
     printf("r_auth: %s\n", r_auth);
-    printf("r_path: %s\n", r_path);
+    printf("r_path: %s\n\n", r_path);
 
 
     // the alg
 
     // if r is ABSOLUTE
     if(strstr(r, HTTP)){
+        bzero(t_auth, sizeof(t_auth));
+        bzero(t_path, sizeof(t_path));
 
         strcat(t_auth, r_auth);
         printf("t_auth: %s\n\n", t_auth);
