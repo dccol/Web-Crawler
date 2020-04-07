@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
     //printf("argv: %s\n", argv[1]);
     char *url = (char*)malloc(sizeof(char) * strlen(argv[1]) + 1);
     strcpy(url, argv[1]);
-    printf("url: %s\n", url);
+    //printf("url: %s\n", url);
 
     //check_EOS(url);
     //printf("The updated url :%s\n", url);
@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
     deque_t *links = new_deque();
     deque_t *fetched_links = new_deque();
 
-    //set_up_connection(url, links, fetched_links);
+    set_up_connection(url, links, fetched_links);
 
     // take each link and (recurse the process)
     while(deque_size(links)){
