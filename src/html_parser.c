@@ -118,7 +118,6 @@ void add_to_queue(deque_t *deque, const char *href_value){
     data->url = url;
     printf("Inserting %s\n\n", data->url);
     deque_insert(deque, *data);
-    free(url);
 }
 
 int queue_check(deque_t *fetched_links, const char *href_value){
