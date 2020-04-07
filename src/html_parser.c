@@ -302,11 +302,13 @@ int determine_relative_type(const char *r, char **r_auth, char *r_path){
 
 void build_t(char *t, char *scheme, char *auth, char *path){
 
-    bzero(t, sizeof(t));
+    printf("The current T: %s\n\n", t);
     strcat(t, scheme);
+    printf("scheme T: %s\n\n", t);
     strcat(t, auth);
+    printf("scheme auth T: %s\n\n", t);
     strcat(t, path);
-    printf("The build T: %s\n\n", t);
+    printf("scheme auth path T: %s\n\n", t);
 }
 
 
