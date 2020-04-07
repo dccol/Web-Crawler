@@ -53,7 +53,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     char request_buffer[REQUEST_SIZE];
     bzero(request_buffer, sizeof(request_buffer));
     generate_request(base, request_buffer);
-    //printf("\nTHE REQUEST:\n%s\n", request_buffer);
+    printf("\nTHE REQUEST:\n%s\n", request_buffer);
 
 
     // send request
@@ -181,11 +181,11 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
 
     // If the response code is not 200 or the content-type is not MIME, return, process next url
     else{
-        //printf("Unsuccessful\tCode %d\tType: %s\n", code, type);
+        printf("Unsuccessful\tCode %d\tType: %s\n", code, type);
         close(client_socket);
         return;
     }
-    //printf("Successful\tCode %d\tType: %s\n", code, type);
+    printf("Successful\tCode %d\tType: %s\n", code, type);
 
 
     /** PARSE THE HTML
