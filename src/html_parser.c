@@ -210,7 +210,7 @@ void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
     char t_auth[100];
     bzero(t_auth, sizeof(t_auth));
 
-    char t_path[100];
+    char t_path[1000];
     bzero(t_path, sizeof(t_path));
 
     // sort of a fix for now
