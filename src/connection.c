@@ -61,7 +61,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
         printf("ERROR writing to socket\n");
         exit(0);
     }
-    //printf("SENT\n");
+    printf("SENT\n");
 
 
 
@@ -175,7 +175,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
 
     }
     printf("Final Buffer length: %lu\n", strlen(html_buffer));
-    printf("The entire data: %s\n", html_buffer);
+    //printf("The entire data: %s\n", html_buffer);
     //printf("All data received\n\n");
 
     // once all the bytes have been received, safe to close the socket
@@ -198,7 +198,6 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
 
     // find the links and store in a queue
     search_for_links(output->root, links, url, fetched_links);
-    printf("It works!!!!\n");
 
     gumbo_destroy_output(&kGumboDefaultOptions, output);
 
