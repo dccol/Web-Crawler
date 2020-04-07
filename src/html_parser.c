@@ -116,7 +116,7 @@ int validate_url_authority(uri_t *base, char *href_value){
 
 void add_to_queue(deque_t *deque, const char *href_value){
     // insert the link into the queue
-    data_t *data = (data_t *) malloc(sizeof(data));
+    data_t *data = (data_t *) malloc(sizeof(*data));
     char *url = malloc(sizeof(*url) * (strlen(href_value) + 1));
     strcpy(url, href_value);
 
@@ -237,6 +237,8 @@ void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
 
         // built t
         build_t(t, t_scheme, t_auth, t_path);
+
+        free(r_path);
         return;
     }
     else { // if R has no scheme
