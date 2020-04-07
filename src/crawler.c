@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
         data_t data = deque_pop(links);
         printf("Next link: %80s\n", data.url);
 
-        //set_up_connection(data.url, links, fetched_links);
+        set_up_connection(data.url, links, fetched_links);
     }
 
     free_deque(links);
