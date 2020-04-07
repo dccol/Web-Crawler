@@ -112,12 +112,13 @@ int validate_url_authority(uri_t *base, char *href_value){
 void add_to_queue(deque_t *deque, const char *href_value){
     // insert the link into the queue
     data_t *data = (data_t *) malloc(sizeof(data));
-    char *url = malloc(sizeof(url) * strlen(href_value) + 1);
+    char *url = malloc(sizeof(*url) * (strlen(href_value) + 1));
     strcpy(url, href_value);
 
     data->url = url;
     printf("Inserting %s\n\n", data->url);
     deque_insert(deque, *data);
+    free(url);
 }
 
 int queue_check(deque_t *fetched_links, const char *href_value){
