@@ -161,11 +161,10 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
             printf("ERROR reading from socket\n");
             exit(0);
         }
-        if(chunk == 0){
+        /*if(chunk == 0){
             printf("Transfer encoding -Final Buffer length: %lu\n", strlen(html_buffer));
             break;
-        }
-
+        }*/
 
         // append the the new data into the main buffer
         strcat(html_buffer, tmp);

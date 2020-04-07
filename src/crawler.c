@@ -15,7 +15,7 @@ uri_t *parse_uri(char *url);
 
 int main(int argc, char *argv[]) {
 
-    char *url = (char*)malloc(sizeof(char) * strlen(argv[1]) + 1);
+    char *url = (char*)malloc(sizeof(char) * (strlen(argv[1]) + 1));
     strcpy(url, argv[1]);
 
     //check_EOS(url);
@@ -25,6 +25,9 @@ int main(int argc, char *argv[]) {
     deque_t *fetched_links = new_deque();
 
     set_up_connection(url, links, fetched_links);
+
+    // if all breaks this
+    free(url);
 
     // take each link and (recurse the process)
     while(links->head != NULL){

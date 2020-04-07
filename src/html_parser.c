@@ -27,7 +27,7 @@ void search_for_links(GumboNode* node, deque_t *queued_links, char *current_page
             // hence when you change the url library ensure the path always has the '/' to begin
             //printf("href_value: %s\n", href->value);
             rfc_func(base->auth, base->path, href->value, t);
-            //printf("T: %s\n", t);
+            printf("T: %s\n", t);
 
             // validate authority match
             if(validate_url_authority(base, t) == 1) {
@@ -240,6 +240,7 @@ void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
         // built t
         build_t(t, t_scheme, t_auth, t_path);
 
+        // look at this if break
         free(r_auth);
         free(r_path);
         return;
