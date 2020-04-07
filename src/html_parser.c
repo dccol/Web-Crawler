@@ -25,7 +25,7 @@ void search_for_links(GumboNode* node, deque_t *queued_links, char *current_page
 
             // be aware that the path must begin with the '/' for this to work,
             // hence when you change the url library ensure the path always has the '/' to begin
-            printf("href_value: %s\n", href->value);
+            //printf("href_value: %s\n", href->value);
             rfc_func(base->auth, base->path, href->value, t);
             printf("T: %s\n", t);
 
@@ -116,7 +116,7 @@ void add_to_queue(deque_t *deque, const char *href_value){
     strcpy(url, href_value);
 
     data->url = url;
-    //printf("Inserting %s\n\n", data->url);
+    printf("Inserting %s\n\n", data->url);
     deque_insert(deque, *data);
 }
 
@@ -216,10 +216,10 @@ void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
     // sort of a fix for now
     // if r is relative (no scheme) => r_path is r
     int type = determine_relative_type(r, &r_auth, r_path);
-    printf("the type: %d\n", type);
+    //printf("the type: %d\n", type);
 
-    printf("r_auth: %s\n", r_auth);
-    printf("r_path: %s\n\n", r_path);
+    //printf("r_auth: %s\n", r_auth);
+    //printf("r_path: %s\n\n", r_path);
 
 
     // the alg
@@ -230,9 +230,9 @@ void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
         bzero(t_path, sizeof(t_path));
 
         strcat(t_auth, r_auth);
-        printf("t_auth: %s\n\n", t_auth);
+        //printf("t_auth: %s\n\n", t_auth);
         strcat(t_path, r_path);
-        printf("t_path: %s\n\n", t_path);
+        //printf("t_path: %s\n\n", t_path);
 
         // built t
         build_t(t, t_scheme, t_auth, t_path);
@@ -307,13 +307,13 @@ int determine_relative_type(const char *r, char **r_auth, char *r_path){
 
 void build_t(char *t, char *scheme, char *auth, char *path){
 
-    printf("The current T: %s\n\n", t);
+    //printf("The current T: %s\n\n", t);
     strcat(t, scheme);
-    printf("scheme T: %s\n\n", t);
+    //printf("scheme T: %s\n\n", t);
     strcat(t, auth);
-    printf("scheme auth T: %s\n\n", t);
+    //printf("scheme auth T: %s\n\n", t);
     strcat(t, path);
-    printf("scheme auth path T: %s\n\n", t);
+    //printf("scheme auth path T: %s\n\n", t);
 }
 
 
