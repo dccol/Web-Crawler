@@ -101,9 +101,9 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     //int body_size = strlen(response) - header_size - sizeof(BLANK_LINE_DELIM) + 1; // plus 1 for '\0'?
     //printf("Body size: %d\n\n", body_size);
 
-    char *header = (char *)malloc(sizeof(*header) * header_size + 1);
+    char *header = (char *)malloc(sizeof(*header) * (header_size + 1));
     strncpy(header, response, header_size);
-    //header[strlen(header) - 1] = '\0';
+    header[header_size] = '\0';
 
     //printf("Headers:\n%s\n", header);
     //printf("\n");
@@ -111,17 +111,17 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
 
     /** look into these malloc **/
     // check the response code of the response.
-    char *head_copy_code = (char *)malloc(sizeof(*head_copy_code) * header_size + 1);
+    char *head_copy_code = (char *)malloc(sizeof(*head_copy_code) * (header_size + 1));
     strncpy(head_copy_code, response, header_size);
-    //head_copy_code[strlen(head_copy_code)] = '\0';
+    head_copy_code[header_size] = '\0';
     int code = get_response_code(head_copy_code);
     //printf("\nCode: %d\n\n", code);
     free(head_copy_code);
 
     // check the content type of the response
-    char *head_copy_type = (char *)malloc(sizeof(*head_copy_type) * header_size + 1);
+    char *head_copy_type = (char *)malloc(sizeof(*head_copy_type) * (header_size + 1));
     strncpy(head_copy_type, response, header_size);
-    //head_copy_type[strlen(head_copy_type)] = '\0';
+    head_copy_type[header_size] = '\0';
     char *type = get_content_type(head_copy_type);
     //printf("Type: %s\n\n", type);
     free(head_copy_type);
