@@ -55,6 +55,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     char request_buffer[REQUEST_SIZE];
     bzero(request_buffer, sizeof(request_buffer));
     generate_request(base, request_buffer);
+    free(base);
     printf("\nTHE REQUEST:\n%s\n", request_buffer);
 
 
