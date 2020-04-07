@@ -141,7 +141,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
 
     // check the content-length hear to see how many bytes should have been received
     int content_length = get_content_length(header);
-    //printf("Content-Length: %d\n", content_length);
+    printf("Content-Length: %d\n", content_length);
     free(header);
 
     // copying the already received bytes into a buffer of maximum response size
@@ -174,8 +174,8 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
         //printf("Buffer length: %lu\n", strlen(html_buffer));
 
     }
-    //printf("Final Buffer length: %lu\n", strlen(html_buffer));
-    //printf("The entire data: %s\n", html_buffer);
+    printf("Final Buffer length: %lu\n", strlen(html_buffer));
+    printf("The entire data: %s\n", html_buffer);
     //printf("All data received\n\n");
 
     // once all the bytes have been received, safe to close the socket
