@@ -8,8 +8,8 @@
 #define URL_PARSE_H
 
 typedef struct uri{
-    char auth[100];
-    char path[100];
+    char auth[1000];
+    char path[1000];
 } uri_t;
 
 

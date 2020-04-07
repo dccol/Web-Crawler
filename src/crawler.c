@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
     free_deque(links);
     free_deque(fetched_links);
 
-    //printf("All links crawled\n");
+    printf("All links crawled\n");
     return 0;
 }
 
