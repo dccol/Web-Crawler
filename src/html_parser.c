@@ -202,7 +202,7 @@ void merge(char *b_auth, char *b_path, char *r_path, char *t_path){
 void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
     // gonna need a way to proper split up the hrefs
     char *r_auth = NULL;
-    char r_path[100];
+    char *r_path = (char *)malloc(sizeof(char) * 1000);
     bzero(r_path, sizeof(r_path));
 
     char t_scheme[] = HTTP;
@@ -213,16 +213,10 @@ void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
     char t_path[1000];
     bzero(t_path, sizeof(t_path));
 
-    // sort of a fix for now
-    // if r is relative (no scheme) => r_path is r
     int type = determine_relative_type(r, &r_auth, r_path);
     printf("the type: %d\n", type);
-
     printf("r_auth: %s\n", r_auth);
     printf("r_path: %s\n\n", r_path);
-
-
-    // the alg
 
     // if r is ABSOLUTE
     if(strstr(r, HTTP)){
