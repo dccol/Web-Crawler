@@ -41,11 +41,14 @@ void search_for_links(GumboNode* node, deque_t *queued_links, char *current_page
                     // insert the link into the queue
                     add_to_queue(queued_links, t);
 
-                    free(base);
+
                 }
             }
+            free(base);
         }
+
     }
+
 
     // continue search
     GumboVector *children = &node->v.element.children;
