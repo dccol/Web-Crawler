@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
     deque_t *links = new_deque();
     deque_t *fetched_links = new_deque();
 
-    set_up_connection(url, links, fetched_links);
+    //set_up_connection(url, links, fetched_links);
 
     // take each link and (recurse the process)
     while(deque_size(links)){
