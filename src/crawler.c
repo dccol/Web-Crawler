@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
     //printf("argv: %s\n", argv[1]);
     char *url = (char*)malloc(sizeof(char) * strlen(argv[1]) + 1);
     strcpy(url, argv[1]);
-    //printf("url: %s\n", url);
+    printf("url: %s\n", url);
 
     //check_EOS(url);
     //printf("The updated url :%s\n", url);
