@@ -25,6 +25,7 @@ void search_for_links(GumboNode* node, deque_t *queued_links, char *current_page
 
             // be aware that the path must begin with the '/' for this to work,
             // hence when you change the url library ensure the path always has the '/' to begin
+            //printf("href_value: %s\n", href->value);
             rfc_func(base->auth, base->path, href->value, t);
             //printf("T: %s\n", t);
 
@@ -172,9 +173,16 @@ void merge(char *b_auth, char *b_path, char *r_path, char *t_path){
         // if there is no trailing '/', then we remove whatever content strrchr() returns
         if(strlen(strrchr(b_path, '/')) > 1){
             // remove strrchr() from b_path
-            char* all_but_last = malloc(sizeof(b_path));
+
+            //printf("basepath: %s\n", b_path);
+
+            char* all_but_last = (char *)malloc(sizeof(char) * strlen(b_path) + 1);
+            bzero(all_but_last, sizeof(all_but_last));
+
             int all_but_last_len = strlen(b_path) - strlen(strrchr(b_path, '/')) + 1; // = 5
-            strncpy(all_but_last, b_path, all_but_last_len);
+            //printf("allbutlast len : %d\n", all_but_last_len);
+            strncat(all_but_last, b_path, all_but_last_len);
+            all_but_last[strlen(all_but_last)] = '\0';
             //printf("All but last: %s\n", all_but_last);
 
             // strcat all but last into t, strcat r_path into t

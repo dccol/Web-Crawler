@@ -6,15 +6,15 @@
 void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     // create the client socket to connect to the server socket
     //int client_socket;
-    printf("%s\n", url);
+    printf("%s\t", url);
     add_to_queue(fetched_links, url);
 
     /** CREATING A SOCKET CONNECTION **/
 
     uri_t *base = parse_uri(url);
 
-    printf("base auth: %s\n", base->auth);
-    printf("base path: %s\n", base->path);
+    //printf("base auth: %s\n", base->auth);
+    //printf("base path: %s\n", base->path);
 
 
     int client_socket;
@@ -53,7 +53,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     char request_buffer[REQUEST_SIZE];
     bzero(request_buffer, sizeof(request_buffer));
     generate_request(base, request_buffer);
-    printf("\nTHE REQUEST:\n%s\n", request_buffer);
+    //printf("\nTHE REQUEST:\n%s\n", request_buffer);
 
 
     // send request
@@ -96,14 +96,14 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     char *body = strstr(response, BLANK_LINE_DELIM)+4;
 
     int header_size = strlen(response) - strlen(body);
-    printf("Header size: %d\n", header_size);
-    return;
-/*
+    //printf("Header size: %d\n", header_size);
+
     //int body_size = strlen(response) - header_size - sizeof(BLANK_LINE_DELIM) + 1; // plus 1 for '\0'?
     //printf("Body size: %d\n\n", body_size);
 
     char *header = (char *)malloc(sizeof(char) * header_size);
     strncpy(header, response, header_size);
+    header[strlen(header)] = '\0';
 
     //printf("Headers:\n%s\n", header);
     //printf("\n");
@@ -113,6 +113,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     // check the response code of the response.
     char *head_copy_code = (char *)malloc(sizeof(*head_copy_code) * header_size);
     strncpy(head_copy_code, response, header_size);
+    head_copy_code[strlen(head_copy_code)] = '\0';
     int code = get_response_code(head_copy_code);
     //printf("\nCode: %d\n\n", code);
     free(head_copy_code);
@@ -120,6 +121,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     // check the content type of the response
     char *head_copy_type = (char *)malloc(sizeof(*head_copy_type) * header_size);
     strncpy(head_copy_type, response, header_size);
+    head_copy_type[strlen(head_copy_type)] = '\0';
     char *type = get_content_type(head_copy_type);
     //printf("Type: %s\n\n", type);
     free(head_copy_type);
@@ -133,60 +135,62 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
 
     char html_buffer[MAX_RESPONSE_SIZE];
     bzero(html_buffer, sizeof(html_buffer));
-    if(code == 200 && strstr(type, "text/html")) {
-
-        //printf("Content already received: %d\n", body_size);
-
-        // check the content-length hear to see how many bytes should have been received
-        int content_length = get_content_length(header);
-        printf("Content-Length: %d\n", content_length);
-        free(header);
-
-        // copying the already received bytes into a buffer of maximum response size
-        strcpy(html_buffer, body);
-
-        // create a tmp storage buffer to store new incoming chunks
-        char tmp[MAX_RESPONSE_SIZE];
-        bzero(tmp, sizeof(tmp));
-        // while the size of html buffer is is less than expected content length, continue to receive data
-        while (strlen(html_buffer) < content_length) {
-
-            size_t chunk = recv(client_socket, &tmp, sizeof(tmp), 0);
-            //printf("chunk = %zu\n", chunk);
-            if(chunk < 0){
-                printf("ERROR reading from socket\n");
-                exit(0);
-            }
-            if(chunk == 0){
-                printf("Transfer encoding -Final Buffer length: %lu\n", strlen(html_buffer));
-                break;
-            }
 
 
-            // append the the new data into the main buffer
-            strcat(html_buffer, tmp);
+    //printf("Content already received: %d\n", body_size);
 
-            // clean tmps memory for the next chunk of bytes
-            bzero(tmp, sizeof(tmp));
+    // check the content-length hear to see how many bytes should have been received
+    int content_length = get_content_length(header);
+    //printf("Content-Length: %d\n", content_length);
+    free(header);
 
-            //printf("Buffer length: %lu\n", strlen(html_buffer));
+    // copying the already received bytes into a buffer of maximum response size
+    strcpy(html_buffer, body);
 
+    // create a tmp storage buffer to store new incoming chunks
+    char tmp[MAX_RESPONSE_SIZE];
+    bzero(tmp, sizeof(tmp));
+    // while the size of html buffer is is less than expected content length, continue to receive data
+    while (strlen(html_buffer) < content_length) {
+
+        size_t chunk = recv(client_socket, &tmp, sizeof(tmp), 0);
+        //printf("chunk = %zu\n", chunk);
+        if(chunk < 0){
+            printf("ERROR reading from socket\n");
+            exit(0);
         }
-        printf("Final Buffer length: %lu\n", strlen(html_buffer));
-        //printf("The entire data: %s\n", html_buffer);
-        //printf("All data received\n\n");
+        if(chunk == 0){
+            printf("Transfer encoding -Final Buffer length: %lu\n", strlen(html_buffer));
+            break;
+        }
 
-        // once all the bytes have been received, safe to close the socket
-        close(client_socket);
+
+        // append the the new data into the main buffer
+        strcat(html_buffer, tmp);
+
+        // clean tmps memory for the next chunk of bytes
+        bzero(tmp, sizeof(tmp));
+
+        //printf("Buffer length: %lu\n", strlen(html_buffer));
+
     }
+    //printf("Final Buffer length: %lu\n", strlen(html_buffer));
+    //printf("The entire data: %s\n", html_buffer);
+    //printf("All data received\n\n");
+
+    // once all the bytes have been received, safe to close the socket
+    close(client_socket);
+
 
     // If the response code is not 200 or the content-type is not MIME, return, process next url
-    else{
-        printf("Unsuccessful\tCode %d\tType: %s\n", code, type);
-        close(client_socket);
-        return;
+    if(code == 200 && strstr(type, "text/html")){
+        printf("Successful\tCode %d\tType: %s\n", code, type);
     }
-    printf("Successful\tCode %d\tType: %s\n", code, type);
+    else {
+        printf("Unsuccessful\tCode %d\tType: %s\n", code, type);
+    }
+
+
 
 
     /** PARSE THE HTML
@@ -198,5 +202,5 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     search_for_links(output->root, links, url, fetched_links);
 
     gumbo_destroy_output(&kGumboDefaultOptions, output);
-*/
+
 }
