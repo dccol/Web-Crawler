@@ -265,7 +265,10 @@ void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
     build_t(t, t_scheme, t_auth, t_path);
 
     // potential break idk
-    free(r_auth);
+    if(r_auth){
+        free(r_auth);
+    }
+    free(r_path);
 }
 
 int determine_relative_type(const char *r, char **r_auth, char *r_path){
