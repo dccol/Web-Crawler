@@ -227,7 +227,9 @@ void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
     if(strstr(r, HTTP)){
 
         strcat(t_auth, r_auth);
+        printf("t_auth: %s\n\n", t_auth);
         strcat(t_path, r_path);
+        printf("t_path: %s\n\n", t_path);
 
         // built t
         build_t(t, t_scheme, t_auth, t_path);
