@@ -195,7 +195,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
      * to get the href to crawl through**/
      // the issue is that we are inserting incomplete urls and we dont have a fix for that yet
     GumboOutput *output = gumbo_parse_with_options(&kGumboDefaultOptions, html_buffer, sizeof(html_buffer));
-
+    printf("gumbo all sweet\n");
     // find the links and store in a queue
     search_for_links(output->root, links, url, fetched_links);
 
