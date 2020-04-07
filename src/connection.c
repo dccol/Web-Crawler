@@ -75,7 +75,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     while(initial_bytes_recv < MAX_RESPONSE_SIZE) {
         size_t chunk = recv(client_socket, &response, sizeof(response), 0);
         initial_bytes_recv = initial_bytes_recv + chunk;
-        //printf("The initial recv received %zu bytes\n", initial_bytes_recv);
+        printf("The initial recv received %zu bytes\n", initial_bytes_recv);
         if(chunk < 0){
             printf("ERROR reading from socket\n");
             exit(0);

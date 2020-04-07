@@ -214,9 +214,9 @@ void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
     bzero(t_path, sizeof(t_path));
 
     int type = determine_relative_type(r, &r_auth, r_path);
-    printf("the type: %d\n", type);
-    printf("r_auth: %s\n", r_auth);
-    printf("r_path: %s\n\n", r_path);
+    //printf("the type: %d\n", type);
+    //printf("r_auth: %s\n", r_auth);
+    //printf("r_path: %s\n\n", r_path);
 
     // if r is ABSOLUTE
     if(strstr(r, HTTP)){
@@ -224,11 +224,11 @@ void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
         bzero(t_path, sizeof(t_path));
 
         strcat(t_auth, r_auth);
-        printf("t_auth: %s\n\n", t_auth);
-        printf("t_path: %s\n\n", t_path);
-        printf("r_path: %s\n\n", r_path);
+        //printf("t_auth: %s\n\n", t_auth);
+        //printf("t_path: %s\n\n", t_path);
+        //printf("r_path: %s\n\n", r_path);
         strcat(t_path, r_path);
-        printf("t_path: %s\n\n", t_path);
+        //printf("t_path: %s\n\n", t_path);
 
         // built t
         build_t(t, t_scheme, t_auth, t_path);
@@ -303,13 +303,13 @@ int determine_relative_type(const char *r, char **r_auth, char *r_path){
 
 void build_t(char *t, char *scheme, char *auth, char *path){
 
-    printf("The current T: %s\n\n", t);
+    //printf("The current T: %s\n\n", t);
     strcat(t, scheme);
-    printf("scheme T: %s\n\n", t);
+    //printf("scheme T: %s\n\n", t);
     strcat(t, auth);
-    printf("scheme auth T: %s\n\n", t);
+    //printf("scheme auth T: %s\n\n", t);
     strcat(t, path);
-    printf("scheme auth path T: %s\n\n", t);
+    //printf("scheme auth path T: %s\n\n", t);
 }
 
 
