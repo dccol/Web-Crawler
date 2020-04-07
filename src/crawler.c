@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
     char *url = (char*)malloc(sizeof(char) * strlen(argv[1]) + 1);
     strcpy(url, argv[1]);
 
-    //check_EOS(url);
+    check_EOS(url);
     //printf("The updated url :%s\n", url);
 
     deque_t *links = new_deque();
