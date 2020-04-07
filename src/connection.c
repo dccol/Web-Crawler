@@ -96,8 +96,9 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     char *body = strstr(response, BLANK_LINE_DELIM)+4;
 
     int header_size = strlen(response) - strlen(body);
-    //printf("Header size: %d\n", header_size);
-
+    printf("Header size: %d\n", header_size);
+    return;
+/*
     //int body_size = strlen(response) - header_size - sizeof(BLANK_LINE_DELIM) + 1; // plus 1 for '\0'?
     //printf("Body size: %d\n\n", body_size);
 
@@ -197,5 +198,5 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     search_for_links(output->root, links, url, fetched_links);
 
     gumbo_destroy_output(&kGumboDefaultOptions, output);
-
+*/
 }

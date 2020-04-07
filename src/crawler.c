@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
     set_up_connection(url, links, fetched_links);
 
     // take each link and (recurse the process)
-    while(deque_size(links)){
+    while(links->head != NULL){
 
         // get the next link from the queue
         data_t data = deque_pop(links);
@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
     free_deque(links);
     free_deque(fetched_links);
 
-    //printf("All links crawled\n");
+    printf("All links crawled\n");
     return 0;
 }
 
