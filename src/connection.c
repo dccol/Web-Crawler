@@ -39,6 +39,8 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     struct hostent *remote_host;
     remote_host = gethostbyname(base->auth);
 
+    free(base);
+
     // copy remote_host address into remote_address (socket)
     memcpy(&remote_address.sin_addr.s_addr, remote_host->h_addr, remote_host->h_length);
 
