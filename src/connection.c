@@ -169,7 +169,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
 
     // check the content-length hear to see how many bytes should have been received
     int content_length = get_content_length(header);
-    //printf("Content-Length: %d\n", content_length);
+    fprintf(stderr, "Content-Length: %d\n", content_length);
     free(header);
 
     // copying the already received bytes into a buffer of maximum response size
@@ -218,10 +218,10 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
 
 
     if(code == 200 && (strstr(type, "text/html") != NULL)) {
-        printf("Successful\tCode %d\tType: %s\n", code, type);
+        fprintf(stderr, "Successful\tCode %d\tType: %s\n", code, type);
     }
     else {
-        printf("Unsuccessful\tCode %d\tType: %s\n", code, type);
+        fprintf(stderr, "Unsuccessful\tCode %d\tType: %s\n", code, type);
     }
 
     free(head_copy_type);
