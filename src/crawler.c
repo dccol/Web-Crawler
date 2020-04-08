@@ -36,13 +36,13 @@ int main(int argc, char *argv[]) {
         data_t data = deque_remove(links);
         //printf("Next link: %80s\n", data.url);
 
-        set_up_connection(data.url, links, fetched_links);
+        //set_up_connection(data.url, links, fetched_links);
     }
 
     free_deque(links);
     free_deque(fetched_links);
 
-    printf("All links crawled\n");
+    fprintf(stderr, "All links crawled\n");
     return 0;
 }
 

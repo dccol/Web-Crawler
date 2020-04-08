@@ -6,7 +6,7 @@
 void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     // create the client socket to connect to the server socket
     //int client_socket;
-    printf("%s\t", url);
+    printf("%s\n", url);
     add_to_queue(fetched_links, url);
 
     /** CREATING A SOCKET CONNECTION **/
@@ -20,7 +20,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     int client_socket;
 
     if ((client_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        printf("\n Socket creation error \n");
+        fprintf(stderr, "Socket creation error \n");
         return;
     }
 
@@ -46,7 +46,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
 
     // connect to the remote address
     if (connect(client_socket, (struct sockaddr *) &remote_address, sizeof(remote_address)) < 0) {
-        printf("\nConnection failed\n");
+        fprintf(stderr, "Connection failed\n");
         return;
     }
 
@@ -76,7 +76,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
 
     // send request
     if(send(client_socket, get_request, strlen(get_request), 0) < 0 ){
-        printf("ERROR writing to socket\n");
+        fprintf(stderr, "ERROR writing to socket\n");
         return;
     }
     //printf("SENT\n");
@@ -95,7 +95,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
         initial_bytes_recv = initial_bytes_recv + chunk;
         //printf("The initial recv received %zu bytes\n", initial_bytes_recv);
         if(chunk < 0){
-            printf("ERROR reading from socket\n");
+            fprintf(stderr, "ERROR reading from socket\n");
             return;
         }
         if(chunk == 0){
@@ -169,7 +169,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
 
     // check the content-length hear to see how many bytes should have been received
     int content_length = get_content_length(header);
-    fprintf(stderr, "Content-Length: %d\n", content_length);
+    //fprintf(stderr, "Content-Length: %d\n", content_length);
     free(header);
 
     // copying the already received bytes into a buffer of maximum response size
@@ -186,7 +186,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
         size_t chunk = recv(client_socket, &tmp, sizeof(tmp), 0);
         //printf("chunk = %zu\n", chunk);
         if (chunk < 0) {
-            printf("ERROR reading from socket\n");
+            fprintf(stderr, "ERROR reading from socket\n");
             close(client_socket);
             free(head_copy_type);
             free(head_copy_code);
