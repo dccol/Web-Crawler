@@ -81,7 +81,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
         //printf("The initial recv received %zu bytes\n", initial_bytes_recv);
         if(chunk < 0){
             printf("ERROR reading from socket\n");
-            exit(0);
+            return;
         }
         // if header is received break
         //printf("size of response %lu\n", strlen(response));
@@ -165,7 +165,10 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
             //printf("chunk = %zu\n", chunk);
             if (chunk < 0) {
                 printf("ERROR reading from socket\n");
-                exit(0);
+                close(client_socket);
+                free(head_copy_type);
+                free(head_copy_code);
+                return;
             }
             /*if(chunk == 0){
                 printf("Transfer encoding -Final Buffer length: %lu\n", strlen(html_buffer));
@@ -196,7 +199,6 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
         printf("Unsuccessful\tCode %d\tType: %s\n", code, type);
         free(head_copy_type);
         free(head_copy_code);
-        free(header);
         return;
     }
 
