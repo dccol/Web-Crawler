@@ -9,6 +9,9 @@ uri_t *parse_uri(char *url){
     sscanf(url, regex_str, base->auth, base->path);
     //printf("base auth %s\n", base->auth);
     //printf("base path %s\n", base->path);
+    if(base->path[0] == '\0'){
+        strcat(base->path, "/");
+    }
     return base;
 }
 
