@@ -292,7 +292,7 @@ int determine_relative_type(const char *r, char **r_auth, char *r_path){
         char tmp_r_implied_protocol[10];
         bzero(tmp_r_implied_protocol, sizeof(tmp_r_implied_protocol));
         // if authority in r
-        if(strstr(r, "//")){
+        if(strstr(r, "//") == r){
             char regex_implied_protocol[] = "//%[^/]%[^\n]";
             *r_auth = (char *)malloc(sizeof(char) * 100);
             sscanf(r, regex_implied_protocol, *r_auth, r_path);
