@@ -151,70 +151,66 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     char html_buffer[MAX_RESPONSE_SIZE];
     bzero(html_buffer, sizeof(html_buffer));
 
+
+
+    // Seg fault debug this
+    // If code 200 and type MIME then proceed with ensuring all the content has been received
+
+
+
+    //printf("Content already received: %d\n", body_size);
+
+    // check the content-length hear to see how many bytes should have been received
+    int content_length = get_content_length(header);
+    //printf("Content-Length: %d\n", content_length);
+    free(header);
+
+    // copying the already received bytes into a buffer of maximum response size
+    strcpy(html_buffer, body);
+
+    // create a tmp storage buffer to store new incoming chunks
+    char tmp[MAX_RESPONSE_SIZE];
+    bzero(tmp, sizeof(tmp));
+    // while the size of html buffer is is less than expected content length, continue to receive data
+    while (strlen(html_buffer) < content_length) {
+
+        size_t chunk = recv(client_socket, &tmp, sizeof(tmp), 0);
+        //printf("chunk = %zu\n", chunk);
+        if (chunk < 0) {
+            printf("ERROR reading from socket\n");
+            close(client_socket);
+            free(head_copy_type);
+            free(head_copy_code);
+            return;
+        }
+        /*if(chunk == 0){
+            printf("Transfer encoding -Final Buffer length: %lu\n", strlen(html_buffer));
+            break;
+        }*/
+
+        // append the the new data into the main buffer
+        strcat(html_buffer, tmp);
+
+        // clean tmps memory for the next chunk of bytes
+        bzero(tmp, sizeof(tmp));
+
+        //printf("Buffer length: %lu\n", strlen(html_buffer));
+
+    }
+    //printf("Final Buffer length: %lu\n", strlen(html_buffer));
+    //printf("The entire data: %s\n", html_buffer);
+    //printf("All data received\n\n");
+
+    // once all the bytes have been received, safe to close the socket
+    close(client_socket);
+    free(head_copy_type);
+    free(head_copy_code);
+
     if(code == 200 && (strstr(type, "text/html") != NULL)) {
         printf("Successful\tCode %d\tType: %s\n", code, type);
-
-
-        // Seg fault debug this
-        // If code 200 and type MIME then proceed with ensuring all the content has been received
-
-
-
-        //printf("Content already received: %d\n", body_size);
-
-        // check the content-length hear to see how many bytes should have been received
-        int content_length = get_content_length(header);
-        //printf("Content-Length: %d\n", content_length);
-        free(header);
-
-        // copying the already received bytes into a buffer of maximum response size
-        strcpy(html_buffer, body);
-
-        // create a tmp storage buffer to store new incoming chunks
-        char tmp[MAX_RESPONSE_SIZE];
-        bzero(tmp, sizeof(tmp));
-        // while the size of html buffer is is less than expected content length, continue to receive data
-        while (strlen(html_buffer) < content_length) {
-
-            size_t chunk = recv(client_socket, &tmp, sizeof(tmp), 0);
-            //printf("chunk = %zu\n", chunk);
-            if (chunk < 0) {
-                printf("ERROR reading from socket\n");
-                close(client_socket);
-                free(head_copy_type);
-                free(head_copy_code);
-                return;
-            }
-            /*if(chunk == 0){
-                printf("Transfer encoding -Final Buffer length: %lu\n", strlen(html_buffer));
-                break;
-            }*/
-
-            // append the the new data into the main buffer
-            strcat(html_buffer, tmp);
-
-            // clean tmps memory for the next chunk of bytes
-            bzero(tmp, sizeof(tmp));
-
-            //printf("Buffer length: %lu\n", strlen(html_buffer));
-
-        }
-        //printf("Final Buffer length: %lu\n", strlen(html_buffer));
-        //printf("The entire data: %s\n", html_buffer);
-        //printf("All data received\n\n");
-
-        // once all the bytes have been received, safe to close the socket
-        close(client_socket);
-        free(head_copy_type);
-        free(head_copy_code);
     }
-
     else {
-        close(client_socket);
         printf("Unsuccessful\tCode %d\tType: %s\n", code, type);
-        free(head_copy_type);
-        free(head_copy_code);
-        return;
     }
 
 
