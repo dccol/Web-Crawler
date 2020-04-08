@@ -11,7 +11,7 @@ void search_for_links(GumboNode* node, deque_t *queued_links, char *current_page
         //printf("\nLink Found: %s\n", href->value);
 
         // if the link has the accepted syntax continue
-        if(validate_url_syn(href->value)) {
+        if(validate_url_syn(href->value) == 1) {
 
             // create the uri to add to the queue (t)
             char t[1000];
