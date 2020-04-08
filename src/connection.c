@@ -56,7 +56,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     bzero(request_buffer, sizeof(request_buffer));
     generate_request(base, request_buffer);
     free(base);
-    //printf("\nTHE REQUEST:\n%s\n", request_buffer);
+    printf("\nTHE REQUEST:\n%s\n", request_buffer);
 
 
     // send request
@@ -108,7 +108,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     strncpy(header, response, header_size);
     header[header_size] = '\0';
 
-    //printf("Headers:\n%s\n", header);
+    printf("Headers:\n%s\n", header);
     //printf("\n");
     //printf("Current Body: %s\n", body);
 
@@ -143,7 +143,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
 
     // check the content-length hear to see how many bytes should have been received
     int content_length = get_content_length(header);
-    //printf("Content-Length: %d\n", content_length);
+    printf("Content-Length: %d\n", content_length);
     free(header);
 
     // copying the already received bytes into a buffer of maximum response size
@@ -175,8 +175,8 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
         //printf("Buffer length: %lu\n", strlen(html_buffer));
 
     }
-    //printf("Final Buffer length: %lu\n", strlen(html_buffer));
-    //printf("The entire data: %s\n", html_buffer);
+    printf("Final Buffer length: %lu\n", strlen(html_buffer));
+    printf("The entire data: %s\n", html_buffer);
     //printf("All data received\n\n");
 
     // once all the bytes have been received, safe to close the socket
