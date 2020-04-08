@@ -64,7 +64,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     bzero(get_request, strlen(request_buffer));
     //printf("\nGET REQUEST:\n%s\n", get_request);
     strncat(get_request, request_buffer, strlen(request_buffer));
-    //printf("\nGET REQUEST:\n%s\n", get_request);
+    printf("\nGET REQUEST:\n%s\n", get_request);
 
 
 
