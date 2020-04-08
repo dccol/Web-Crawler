@@ -108,7 +108,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     strncpy(header, response, header_size);
     header[header_size] = '\0';
 
-    printf("Headers:\n%s\n", header);
+    printf("Headers:\n%s\n\n", header);
     //printf("\n");
     //printf("Current Body: %s\n", body);
 
