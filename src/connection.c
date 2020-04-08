@@ -88,7 +88,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     //printf("clean response: %s\n", response );
 
     size_t initial_bytes_recv = 0;
-
+    int count = 0;
     // keep recv until the header has been received
     while(initial_bytes_recv < MAX_RESPONSE_SIZE) {
         size_t chunk = recv(client_socket, &response, sizeof(response), 0);
@@ -99,8 +99,11 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
             return;
         }
         if(chunk == 0){
-            // can't receive so return and try next link
-            return;
+            count++;
+            // if multiple empty chunks in a row can't receive so return and try next link
+            if(count > 2) {
+                return;
+            }
         }
         // if header is received break
         //printf("size of response %lu\n", strlen(response));
