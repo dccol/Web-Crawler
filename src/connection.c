@@ -98,6 +98,10 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
             printf("ERROR reading from socket\n");
             return;
         }
+        if(chunk == 0){
+            // can't receive so return and try next link
+            return;
+        }
         // if header is received break
         //printf("size of response %lu\n", strlen(response));
         if(strstr(response, BLANK_LINE_DELIM)){
@@ -203,8 +207,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
 
     // once all the bytes have been received, safe to close the socket
     close(client_socket);
-    free(head_copy_type);
-    free(head_copy_code);
+
 
     if(code == 200 && (strstr(type, "text/html") != NULL)) {
         printf("Successful\tCode %d\tType: %s\n", code, type);
@@ -212,6 +215,9 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     else {
         printf("Unsuccessful\tCode %d\tType: %s\n", code, type);
     }
+
+    free(head_copy_type);
+    free(head_copy_code);
 
 
     /** PARSE THE HTML
