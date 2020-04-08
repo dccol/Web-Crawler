@@ -6,7 +6,7 @@
 void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     // create the client socket to connect to the server socket
     //int client_socket;
-    printf("%100s\t", url);
+    printf("%s\t", url);
     add_to_queue(fetched_links, url);
 
     /** CREATING A SOCKET CONNECTION **/
@@ -98,7 +98,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
      */
     char *body = strstr(response, BLANK_LINE_DELIM)+4;
 
-    int header_size = strlen(response) - strlen(body);
+    int header_size = strlen(response) - strlen(body) - 4;
     //printf("Header size: %d\n", header_size);
 
     //int body_size = strlen(response) - header_size - sizeof(BLANK_LINE_DELIM) + 1; // plus 1 for '\0'?
