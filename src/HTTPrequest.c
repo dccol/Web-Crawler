@@ -14,10 +14,9 @@ void generate_request(uri_t *base, char *request){
 
     // add User-Agent: header
     strcat(request, "User-Agent: ");
-    strcat(request, "dccol");
-    strcat(request, "\r\n");
+    strcat(request, "dccol\r\n");
 
+    // add Connection: header
     strcat(request, "Connection: ");
-    strcat(request, "close");
-    strcat(request, "\r\n\r\n");
+    strcat(request, "close\r\n\r\n");
 }
