@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     free(url);
 
     // take each link and (recurse the process)
-    while(links->head != NULL){
+    while(links){
 
         // get the next link from the queue
         data_t data = deque_pop(links);
