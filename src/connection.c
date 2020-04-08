@@ -80,6 +80,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
         return;
     }
     //printf("SENT\n");
+    free(get_request);
 
 
 
