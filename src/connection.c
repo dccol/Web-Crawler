@@ -56,8 +56,6 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     bzero(request_buffer, sizeof(request_buffer));
     generate_request(base, request_buffer);
     free(base);
-    //printf("size of requestbuffer %lu\n", sizeof(request_buffer));
-    //printf("strlen requestbuffer: %lu\n", strlen(request_buffer));
 
     // so we have the request buffer now we cant to allocated strlen(request_buffer)
     //printf("\nTHE REQUEST BUFFER:\n%s\n", request_buffer);
