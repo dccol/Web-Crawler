@@ -56,11 +56,21 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     bzero(request_buffer, sizeof(request_buffer));
     generate_request(base, request_buffer);
     free(base);
-    printf("\nTHE REQUEST:\n%s\n", request_buffer);
+
+    // so we have the request buffer now we cant to allocated strlen(request_buffer)
+    //printf("\nTHE REQUEST BUFFER:\n%s\n", request_buffer);
+    char *get_request = (char*)malloc(sizeof(*get_request) * (strlen(request_buffer)+1));
+    //printf("\nGET REQUEST:\n%s\n", get_request);
+    bzero(get_request, strlen(request_buffer));
+    //printf("\nGET REQUEST:\n%s\n", get_request);
+    strncat(get_request, request_buffer, strlen(request_buffer));
+    //printf("\nGET REQUEST:\n%s\n", get_request);
+
+
 
 
     // send request
-    if(send(client_socket, request_buffer, sizeof(request_buffer), 0) < 0 ){
+    if(send(client_socket, get_request, sizeof(request_buffer), 0) < 0 ){
         printf("ERROR writing to socket\n");
         exit(0);
     }
