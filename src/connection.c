@@ -21,7 +21,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
 
     if ((client_socket = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         printf("\n Socket creation error \n");
-        exit(0);
+        return;
     }
 
     // create socket address of the server socket
@@ -47,7 +47,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     // connect to the remote address
     if (connect(client_socket, (struct sockaddr *) &remote_address, sizeof(remote_address)) < 0) {
         printf("\nConnection failed\n");
-        exit(0);
+        return;
     }
 
     /** SENDING A REQUEST **/
@@ -56,23 +56,30 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     bzero(request_buffer, sizeof(request_buffer));
     generate_request(base, request_buffer);
     free(base);
+    //printf("size of requestbuffer %lu\n", sizeof(request_buffer));
+    //printf("strlen requestbuffer: %lu\n", strlen(request_buffer));
 
     // so we have the request buffer now we cant to allocated strlen(request_buffer)
     //printf("\nTHE REQUEST BUFFER:\n%s\n", request_buffer);
-    char *get_request = (char*)malloc(sizeof(*get_request) * (strlen(request_buffer)+1));
-    //printf("\nGET REQUEST:\n%s\n", get_request);
+    char *get_request = (char*)malloc(sizeof(*get_request) * (strlen(request_buffer) + 1));
     bzero(get_request, strlen(request_buffer));
+    //printf("size of getrequest: %lu\n", sizeof(get_request));
+    //printf("strlen: %lu\n", strlen(get_request));
+    //printf("\nGET REQUEST:\n%s\n", get_request);
+
     //printf("\nGET REQUEST:\n%s\n", get_request);
     strncat(get_request, request_buffer, strlen(request_buffer));
+    //printf("size of getrequest: %lu\n", sizeof(get_request));
+   // printf("strlen: %lu\n", strlen(get_request));
     printf("\nGET REQUEST:\n%s\n", get_request);
 
 
 
 
     // send request
-    if(send(client_socket, get_request, sizeof(request_buffer), 0) < 0 ){
+    if(send(client_socket, get_request, strlen(get_request), 0) < 0 ){
         printf("ERROR writing to socket\n");
-        exit(0);
+        return;
     }
     //printf("SENT\n");
 
