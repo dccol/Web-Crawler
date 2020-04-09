@@ -34,7 +34,6 @@ void build_t(char *t, char *scheme, char *auth, char *path);
 
 int determine_relative_type(const char *r, char **r_auth, char *r_path);
 
-
 #endif
 
 
