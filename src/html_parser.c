@@ -100,17 +100,23 @@ int validate_url_authority(uri_t *base, char *href_value){
     }
 }
 
+/*
+ * adds a resolved href value into a queue
+ */
 void add_to_queue(deque_t *deque, const char *href_value){
-    // insert the link into the queue
+
     data_t *data = (data_t *) malloc(sizeof(*data));
     char *url = malloc(sizeof(*url) * (strlen(href_value) + 1));
     strcpy(url, href_value);
 
     data->url = url;
-    //printf("Inserting %s\n\n", data->url);
+
     deque_insert(deque, *data);
 }
 
+/*
+ * Searches a queue for a url
+ */
 int queue_check(deque_t *fetched_links, const char *href_value){
 
     data_t *data = (data_t *) malloc(sizeof(*data));
@@ -138,41 +144,38 @@ int queue_check(deque_t *fetched_links, const char *href_value){
     return 1;
 }
 
-
+/*
+ * Merges a Base uri's path with a Relative uri's path
+ */
 void merge(char *b_auth, char *b_path, char *r_path, char *t_path){
 
     // option 1 - base has no path
     if(b_auth != NULL && strcmp(b_path, "/") == 0){
+
         strcat(t_path, "/");
         strcat(t_path, r_path);
-        //printf("The result of merge: %s\n", t_path);
         return;
     }
-        // option 2 -
+    // option 2
     else{
         // if there is content after the right-most '/' segment => signifies there is no trailing '/'
         // if there is no trailing '/', then we remove whatever content strrchr() returns
         if(strlen(strrchr(b_path, '/')) > 1){
-            // remove strrchr() from b_path
-
-            //printf("basepath: %s\n", b_path);
 
             char* all_but_last = (char *)malloc(sizeof(char) * strlen(b_path) + 1);
             bzero(all_but_last, (sizeof(char) * strlen(b_path) + 1));
 
-            int all_but_last_len = strlen(b_path) - strlen(strrchr(b_path, '/')) + 1; // = 5
-            //printf("allbutlast len : %d\n", all_but_last_len);
+            int all_but_last_len = strlen(b_path) - strlen(strrchr(b_path, '/')) + 1;
+
             strncat(all_but_last, b_path, all_but_last_len);
             all_but_last[strlen(all_but_last)] = '\0';
-            //printf("All but last: %s\n", all_but_last);
 
-            // strcat all but last into t, strcat r_path into t
             strcat(t_path, all_but_last);
             strcat(t_path, r_path);
-            //printf("The result of merge: %s\n", t_path);
+
             free(all_but_last);
         }
-            // otherwise just append straight on
+        // otherwise append straight on to the end, no remove snip required
         else{
             strcat(t_path, b_path);
             strcat(t_path, r_path);
@@ -180,8 +183,13 @@ void merge(char *b_auth, char *b_path, char *r_path, char *t_path){
     }
 }
 
+/*
+ * Resolves href values into absolute urls, as per RFC specifications
+ */
 void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
-    // gonna need a way to proper split up the hrefs
+
+    // r = Reference, b = Base, t = Target
+
     char *r_auth = NULL;
     char *r_path = (char *)malloc(sizeof(char) * 1000);
     bzero(r_path, (sizeof(char) * 1000));
@@ -195,9 +203,6 @@ void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
     bzero(t_path, sizeof(t_path));
 
     int type = determine_relative_type(r, &r_auth, r_path);
-    //printf("the type: %d\n", type);
-    //printf("r_auth: %s\n", r_auth);
-    //printf("r_path: %s\n\n", r_path);
 
     // if r is ABSOLUTE
     if(strstr(r, HTTP)){
@@ -205,43 +210,34 @@ void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
         bzero(t_path, sizeof(t_path));
 
         strcat(t_auth, r_auth);
-        //printf("t_auth: %s\n\n", t_auth);
-        //printf("t_path: %s\n\n", t_path);
-        //printf("r_path: %s\n\n", r_path);
         strcat(t_path, r_path);
-        //printf("t_path: %s\n\n", t_path);
 
-        // built t
         build_t(t, t_scheme, t_auth, t_path);
 
-        // look at this if break
         free(r_auth);
         free(r_path);
         return;
     }
-    else { // if R has no scheme
-
-        // if R is IMPLIED PROTOCOL
-        if (type == IMPLIED_PROTO) { //2a
+    // if r has no scheme
+    else {
+        // if r is IMPLIED PROTOCOL
+        if (type == IMPLIED_PROTO) {
             strcat(t_auth, r_auth);
             strcat(t_path, r_path);
-
         }
-            // if R is IMPLIED AUTHORITY + PROTOCOL
-        else { //2b
-
+        // if r is IMPLIED AUTHORITY + PROTOCOL
+        else {
             // if the path is empty
-            if (strlen(r_path) < 1) {// 3a
+            if (strlen(r_path) < 1) {
                 strcat(t_path, b_path);
             }
-
-            else { //3b if there is a path
+            //if there is a path
+            else {
 
                 if (strncmp(r_path, "/", sizeof(char)) == 0) {
                     strcat(t_path, r_path);
                 } else {
                     merge(b_auth, b_path, r_path, t_path);
-                    //printf("Merge: %s\n", t_path);
                 }
             }
             strcat(t_auth, b_auth);
@@ -249,7 +245,6 @@ void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
     }
     build_t(t, t_scheme, t_auth, t_path);
 
-    // potential break idk
     if(r_auth){
         free(r_auth);
     }
