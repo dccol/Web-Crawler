@@ -7,7 +7,7 @@
 #include <string.h>
 
 #include "../lib/gumbo/gumbo.h"
-#include "../lib/deque/deque.h"
+#include "deque.h"
 #include "url_parse.h"
 
 #define HREF "href"
