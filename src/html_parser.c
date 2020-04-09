@@ -252,7 +252,9 @@ void rfc_func(char *b_auth, char *b_path, const char *r, char *t){
 }
 
 
-// check this lots of the urls have double // in the test env
+/*
+ * Determines the href values reference type
+ */
 int determine_relative_type(const char *r, char **r_auth, char *r_path){
 
     // if no scheme in r
@@ -260,41 +262,44 @@ int determine_relative_type(const char *r, char **r_auth, char *r_path){
 
         char tmp_r_implied_protocol[10];
         bzero(tmp_r_implied_protocol, sizeof(tmp_r_implied_protocol));
+
         // if authority in r
         if(strstr(r, "//") == r){
+
             char regex_implied_protocol[] = "//%[^/]%[^\n]";
             *r_auth = (char *)malloc(sizeof(char) * 100);
             sscanf(r, regex_implied_protocol, *r_auth, r_path);
-            //printf("r_auth in func: %s\n", *r_auth);
-            //printf("r_path: %s\n", r_path);
+
             return IMPLIED_PROTO;
         }
-            // if no "//" then its implied protocol and authority
+
+        // if no scheme or authority, then its implied protocol and authority
         else {
             strcat(r_path, r);
             return IMPLIED_AUTH;
         }
     }
-        // if there is a scheme
+    // if there is a scheme
     else {
+
         char regex_str[] = "http://%[^/]%[^\n]";
         *r_auth = (char *)malloc(sizeof(char) * 100);
         sscanf(r, regex_str, *r_auth, r_path);
         return ABSOLUTE;
     }
-    //printf("r_auth: %s\n", r_auth);
-    //printf("r_path: %s\n", r_path);
 }
 
+/*
+ * Takes the components of the target url and builds the target
+ */
 void build_t(char *t, char *scheme, char *auth, char *path){
 
-    //printf("The current T: %s\n\n", t);
     strcat(t, scheme);
-    //printf("scheme T: %s\n\n", t);
+
     strcat(t, auth);
-    //printf("scheme auth T: %s\n\n", t);
+
     strcat(t, path);
-    //printf("scheme auth path T: %s\n\n", t);
+
 }
 
 
