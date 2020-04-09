@@ -1,51 +1,62 @@
 
 #include "html_parser.h"
 
-/*
- * Search the DOM for A tags and insert the resolved (into absolute form) href values into a queue to be fetched
- */
 void search_for_links(GumboNode* node, deque_t *queued_links, char *current_page_url, deque_t *fetched_links) {
     if (node->type != GUMBO_NODE_ELEMENT) {
         return;
     }
     GumboAttribute *href;
-    if (node->v.element.tag == GUMBO_TAG_A && (href = gumbo_get_attribute(&node->v.element.attributes, HREF))) {
+    if (node->v.element.tag == GUMBO_TAG_A &&
+        (href = gumbo_get_attribute(&node->v.element.attributes, HREF))) {
+        //printf("\nLink Found: %s\n", href->value);
 
-        // check if the href value has accepted syntax for the purpose of this assignment
+        // if the link has the accepted syntax continue
         if(validate_url_syn(href->value) == 1) {
 
-            // this will be the result of the resolved href value
+            // create the uri to add to the queue (t)
             char t[1000];
             bzero(t, sizeof(t));
 
             uri_t *base = parse_uri(current_page_url);
 
-            relative_resolution(base->auth, base->path, href->value, t);
+            /*if(strcmp(base->path, "") == 0){
+                strcat(base->path, "/");
+            }*/
 
-            // check if all but the first component of the authority match
+            // be aware that the path must begin with the '/' for this to work,
+            // hence when you change the url library ensure the path always has the '/' to begin
+            //printf("href_value: %s\n", href->value);
+            rfc_func(base->auth, base->path, href->value, t);
+            //printf("T: %s\n", t);
+
+            // validate authority match
             if(validate_url_authority(base, t) == 1) {
 
-                // if the url has not already been fetched AND the url is not currently in the queue
+                // if the url has not already been fetched AND if the url is not currently in the queue
                 if((queue_check(fetched_links, t) == 1) && (queue_check(queued_links, t) == 1)) {
+
+                    // add a trailing '/'
+                    //check_EOS(t);
 
                     // insert the link into the queue
                     add_to_queue(queued_links, t);
+
+
                 }
             }
             free(base);
         }
+
     }
 
-    // continue search down the DOM
+
+    // continue search
     GumboVector *children = &node->v.element.children;
     for (int i = 0; i < children->length; ++i) {
         search_for_links((GumboNode*)children->data[i], queued_links, current_page_url, fetched_links);
     }
 }
 
-/*
- * Checks whether a string contains any ignorable characters
- */
 int validate_url_syn(const char* url){
     // check for ignorable characters in url
     if(strstr(url, "./")){
@@ -63,31 +74,42 @@ int validate_url_syn(const char* url){
     if(strstr(url, "%")){
         return 0;
     }
+    if(strstr(url, "mailto")){
+        return  0;
+    }
+    if(strstr(url, "ftp")){
+        return 0;
+    }
     if(strstr(url, "https://")){
         return 0;
     }
     return 1;
 }
 
-/*
- * Checks whether all but the first component of an authority match
- */
+// if all but the first component match, return 1
 int validate_url_authority(uri_t *base, char *href_value){
 
-    uri_t *href = parse_uri(href_value);
+    uri_t *href_info = parse_uri(href_value);
+    //printf("The href url: %s\n", href_value);
+
+    //printf("Current host name: %s\n", current_url_info->host);
+    //printf("Href host name: %s\n", href_info->host);
 
     // split remove the first component
     char *base_split = strchr(base->auth, '.');
-    char *href_split = strchr(href->auth, '.');
+    char *href_split = strchr(href_info->auth, '.');
+
+    //printf("The current: %s\n", current_split);
+    //printf("The href: %s\n\n", href_split);
 
     // if the rest of the components are the same => success
     if((strcmp(base_split, href_split) == 0)){
-        free(href);
+        free(href_info);
         return 1;
     }
     // otherwise failure
     else{
-        free(href);
+        free(href_info);
         return -1;
     }
 }

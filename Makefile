@@ -2,9 +2,7 @@
 
 ##Gets a list of source files from /src
 src = $(wildcard src/*.c)
-lib = $(wildcard lib/gumbo/*.c) \
-    $(wildcard lib/deque/*.c) \
-    $(wildcard lib/url_parser/*.c)
+lib = $(wildcard lib/gumbo/*.c)
 
 CC=gcc
 CFLAGS= -g -Wall -std=gnu99 -I -O3.
