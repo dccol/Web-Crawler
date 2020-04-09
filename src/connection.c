@@ -3,19 +3,16 @@
 #include "connection.h"
 #include "header_parser.h"
 
+// creates a TCP connection between the client socket and the host server socket
 void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     // create the client socket to connect to the server socket
     //int client_socket;
     printf("%s\n", url);
     add_to_queue(fetched_links, url);
 
-    /** CREATING A SOCKET CONNECTION **/
-
     uri_t *base = parse_uri(url);
 
-    //printf("base auth: %s\n", base->auth);
-    //printf("base path: %s\n", base->path);
-
+    // CREATE THE SOCKET ----------------------------------------------------------------------------------------------
 
     int client_socket;
 
@@ -24,7 +21,7 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
         return;
     }
 
-    // create socket address of the server socket
+    // Create socket address of the server socket
     struct sockaddr_in remote_address;
 
     // Internet connection
@@ -32,7 +29,8 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
 
     // HTTP port
     remote_address.sin_port = htons(80);
-    // converts string address IP from command line to address structure
+
+    // converts string address IP from to address structure (adaptation)
     // inet_aton(address, &remote_address.sin_addr.s_addr);
 
     // Use DNS to retrieve host attributes
@@ -41,151 +39,114 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
 
 
 
-    // copy remote_host address into remote_address (socket)
+    // Copy remote_host address into remote_address (socket)
     memcpy(&remote_address.sin_addr.s_addr, remote_host->h_addr, remote_host->h_length);
 
-    // connect to the remote address
+    // Connect socket to the remote address
     if (connect(client_socket, (struct sockaddr *) &remote_address, sizeof(remote_address)) < 0) {
         fprintf(stderr, "Connection failed\n");
         return;
     }
 
-    /** SENDING A REQUEST **/
-    // generate a HTTP request from the host server information
+    // SEND THE REQUEST -----------------------------------------------------------------------------------------------
+
+    // Generate a HTTP request
     char request_buffer[REQUEST_SIZE];
     bzero(request_buffer, sizeof(request_buffer));
     generate_request(base, request_buffer);
     free(base);
 
-    // so we have the request buffer now we cant to allocated strlen(request_buffer)
-    //printf("\nTHE REQUEST BUFFER:\n%s\n", request_buffer);
     char *get_request = (char*)malloc(sizeof(*get_request) * (strlen(request_buffer) + 1));
     bzero(get_request, strlen(request_buffer));
-    //printf("size of getrequest: %lu\n", sizeof(get_request));
-    //printf("strlen: %lu\n", strlen(get_request));
-    //printf("\nGET REQUEST:\n%s\n", get_request);
 
-    //printf("\nGET REQUEST:\n%s\n", get_request);
     strncat(get_request, request_buffer, strlen(request_buffer));
-    //printf("size of getrequest: %lu\n", sizeof(get_request));
-    // printf("strlen: %lu\n", strlen(get_request));
-    //printf("\nGET REQUEST:\n%s\n", get_request);
 
-
-
-
-    // send request
+    // Send request
     if(send(client_socket, get_request, strlen(get_request), 0) < 0 ){
         fprintf(stderr, "ERROR writing to socket\n");
         return;
     }
-    //printf("SENT\n");
     free(get_request);
 
-
+    // RECEIVE RESPONSE
 
     char response[MAX_RESPONSE_SIZE];
     bzero(response, sizeof(response));
-    //printf("clean response: %s\n", response );
 
     size_t initial_bytes_recv = 0;
     int count = 0;
-    // keep recv until the header has been received
+
+    // recv until headers have been received
     while(initial_bytes_recv < MAX_RESPONSE_SIZE) {
         size_t chunk = recv(client_socket, &response, sizeof(response), 0);
         initial_bytes_recv = initial_bytes_recv + chunk;
-        //printf("The initial recv received %zu bytes\n", initial_bytes_recv);
+
         if(chunk < 0){
             fprintf(stderr, "ERROR reading from socket\n");
             return;
         }
         if(chunk == 0){
             count++;
-            // if multiple empty chunks in a row can't receive so return and try next link
+            // if multiple empty chunks in a row return and try next link ) guard infinite loop
             if(count > 2) {
                 return;
             }
         }
-        // if header is received break
-        //printf("size of response %lu\n", strlen(response));
+        // if header is received break loop and continue
         if(strstr(response, BLANK_LINE_DELIM)){
-            //printf("Header received!\n");
             break;
         }
     }
 
-    /**
-     * Split the initial response into a header and body
-     * Allows header values to be parsed
+    /*
+     * Split the initial response, read header values to be parsed
      * Allows ability to determine whether all bytes have been read or whether further reading needs to take place
      */
     char *body = strstr(response, BLANK_LINE_DELIM)+4;
 
     int header_size = strlen(response) - strlen(body) - 4;
-    //printf("Header size: %d\n", header_size);
-
-    //int body_size = strlen(response) - header_size - sizeof(BLANK_LINE_DELIM) + 1; // plus 1 for '\0'?
-    //printf("Body size: %d\n\n", body_size);
 
     char *header = (char *)malloc(sizeof(*header) * (header_size + 1));
     strncpy(header, response, header_size);
     header[header_size] = '\0';
 
-    //printf("Headers:\n%s\n\n", header);
-    //printf("\n");
-    //printf("Current Body: %s\n", body);
 
-    /** look into these malloc **/
-    // check the response code of the response.
+    // parse response code from header
     char *head_copy_code = (char *)malloc(sizeof(*head_copy_code) * (header_size + 1));
     strncpy(head_copy_code, response, header_size);
     head_copy_code[header_size] = '\0';
     int code = get_response_code(head_copy_code);
-    //printf("\nCode: %d\n\n", code);
 
-    // check the content type of the response
+    // parse content type
     char *head_copy_type = (char *)malloc(sizeof(*head_copy_type) * (header_size + 1));
     strncpy(head_copy_type, response, header_size);
     head_copy_type[header_size] = '\0';
     char *type = get_content_type(head_copy_type);
-    //printf("Type: %s\n\n", type);
 
 
-    /** Now that we know the html type is valid and the code is 200
-     *  Continue reading data until the size of the response buffer is equal to the content-length value
-     */
-
+     // Continue reading data until the size of the html buffer is equal to the content-length value
 
     char html_buffer[MAX_RESPONSE_SIZE];
     bzero(html_buffer, sizeof(html_buffer));
 
-
-
-    // Seg fault debug this
-    // If code 200 and type MIME then proceed with ensuring all the content has been received
-
-
-
-    //printf("Content already received: %d\n", body_size);
-
-    // check the content-length hear to see how many bytes should have been received
+    // parse the content-length
     int content_length = get_content_length(header);
-    //fprintf(stderr, "Content-Length: %d\n", content_length);
     free(header);
 
-    // copying the already received bytes into a buffer of maximum response size
+    // copying the already received bytes into it's own buffer of maximum size
     strcpy(html_buffer, body);
 
-    // create a tmp storage buffer to store new incoming chunks
+    // create a temp storage buffer to store new incoming chunks
     char tmp[MAX_RESPONSE_SIZE];
     bzero(tmp, sizeof(tmp));
 
     count = 0;
+
     // while the size of html buffer is is less than expected content length, continue to receive data
     while (strlen(html_buffer) < content_length) {
 
         size_t chunk = recv(client_socket, &tmp, sizeof(tmp), 0);
-        //printf("chunk = %zu\n", chunk);
+
         if (chunk < 0) {
             fprintf(stderr, "ERROR reading from socket\n");
             close(client_socket);
@@ -201,23 +162,17 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
             }
         }
 
-        // append the the new data into the main buffer
+        // append the the new data onto the html buffer
         strcat(html_buffer, tmp);
 
-        // clean tmps memory for the next chunk of bytes
         bzero(tmp, sizeof(tmp));
 
-        //printf("Buffer length: %lu\n", strlen(html_buffer));
-
     }
-    //printf("Final Buffer length: %lu\n", strlen(html_buffer));
-    //printf("The entire data: %s\n", html_buffer);
-    //printf("All data received\n\n");
 
     // once all the bytes have been received, safe to close the socket
     close(client_socket);
 
-
+    // information about the success of the request
     if(code == 200 && (strstr(type, "text/html") != NULL)) {
         fprintf(stderr, "Successful\tCode %d\tType: %s\n", code, type);
     }
@@ -228,15 +183,12 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     free(head_copy_type);
     free(head_copy_code);
 
+    // PARSE THE HTML
 
-    /** PARSE THE HTML
-     * to get the href to crawl through**/
-     // the issue is that we are inserting incomplete urls and we dont have a fix for that yet
     GumboOutput *output = gumbo_parse_with_options(&kGumboDefaultOptions, html_buffer, sizeof(html_buffer));
 
-    // find the links and store in a queue
+    // crawl the DOM for links and store in a queue
     search_for_links(output->root, links, url, fetched_links);
 
     gumbo_destroy_output(&kGumboDefaultOptions, output);
-
 }

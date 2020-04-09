@@ -14,7 +14,6 @@
 #include <assert.h>
 #include <unistd.h>
 
-
 #include "../lib/gumbo/gumbo.h"
 #include "HTTPrequest.h"
 #include "html_parser.h"
@@ -23,9 +22,6 @@
 #define REQUEST_SIZE 1000
 #define BLANK_LINE_DELIM "\r\n\r\n"
 
-
-
-// creates a TCP connection between the client socket and the host server socket
 void set_up_connection(char *url, deque_t *links, deque_t *fetched_links);
 
 int get_content_length(char *head);

@@ -8,24 +8,6 @@
 
 #include "deque.h"
 
-
-/*struct data {
-	const char *url;
-};
-
-struct node {
-	data_t data;
-	node_t *next;
-    node_t *prev;
-};
-
-struct deque {
-    int size;
-    node_t *head;
-	node_t *foot;
-};*/
-
-
 deque_t *new_deque() {
     deque_t *deque;
     deque = (deque_t*)malloc(sizeof(*deque));
@@ -97,8 +79,6 @@ data_t deque_pop(deque_t *deque) {
     }
     deque->size--;
     return new;
-    fprintf(stderr, "Error: deque_pop() not implemented\n");
-    exit(EXIT_FAILURE);
 }
 
 data_t deque_remove(deque_t *deque) {

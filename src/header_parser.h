@@ -8,5 +8,4 @@ char *get_content_type(char *head);
 
 int get_response_code(char *head);
 
-
 #endif
