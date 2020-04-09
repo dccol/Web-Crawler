@@ -1,6 +1,9 @@
 
 #include "url_parse.h"
 
+/*
+ * Take a url and parse it into its authority and path components
+ */
 uri_t *parse_uri(char *url){
 
     char regex_str[] = "http://%[^/]%[^\n]";

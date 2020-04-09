@@ -26,8 +26,6 @@ void add_to_queue(deque_t *deque, const char *href_value);
 
 int queue_check(deque_t *fetched_links, const char *href_value);
 
-void check_EOS(char *url);
-
 void merge(char *b_auth, char *b_path, char *r_path, char *t);
 
 void rfc_func(char *b_auth, char *b_path, const char *href_value, char *t);

@@ -152,18 +152,6 @@ int queue_check(deque_t *fetched_links, const char *href_value){
     return 1;
 }
 
-// maybe only for end of authority at beginning of program
-void check_EOS(char *url){
-
-    // if there is content after the right most '/' segment => signifies there is no trailing '/'
-    //printf("%s\n", strrchr(url, '/'));
-    if(strlen(strrchr(url, '/')) > 1){
-        // add trailing '/'
-        strcat(url, "/");
-    }
-
-}
-
 
 void merge(char *b_auth, char *b_path, char *r_path, char *t_path){
 

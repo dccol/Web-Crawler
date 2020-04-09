@@ -85,9 +85,10 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
             fprintf(stderr, "ERROR reading from socket\n");
             return;
         }
+        // if chunk is zero consecutively, suggests the page may be TRUNCATED. Ignore this page
         if(chunk == 0){
             count++;
-            // if multiple empty chunks in a row return and try next link ) guard infinite loop
+
             if(count > 2) {
                 return;
             }
@@ -154,6 +155,8 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
             free(head_copy_code);
             return;
         }
+
+        // if chunk is zero consecutively, suggests the page may be TRUNCATED. Ignore this page
         if(chunk == 0){
             count++;
             if((strlen(html_buffer) < content_length) && count > 2) {
@@ -172,19 +175,30 @@ void set_up_connection(char *url, deque_t *links, deque_t *fetched_links) {
     // once all the bytes have been received, safe to close the socket
     close(client_socket);
 
-    // information about the success of the request
-    if(code == 200 && (strstr(type, "text/html") != NULL)) {
-        fprintf(stderr, "Successful\tCode %d\tType: %s\n", code, type);
+    // CHECKS ---------------------------------------------------------------------------------------------------------
+
+    // if the MIME type is not text/html, do not parse the page!
+    if(strstr(type, "text/html") == NULL){
+        return;
     }
+
+    // if the MIME type is accepted
     else {
-        fprintf(stderr, "Unsuccessful\tCode %d\tType: %s\n", code, type);
+        // if response code is 200, indicates success
+        if(code == 200) {
+            fprintf(stderr, "Successful\tCode %d\n", code);
+        }
+        // otherwise another suggests some type of failure, however we will still parse these responses
+        else{
+            fprintf(stderr, "Unsuccessful\tCode %d\n", code);
+        }
     }
+
 
     free(head_copy_type);
     free(head_copy_code);
 
-    // PARSE THE HTML
-
+    // PARSE THE HTML ("All text/html pages should be parsed and crawled")
     GumboOutput *output = gumbo_parse_with_options(&kGumboDefaultOptions, html_buffer, sizeof(html_buffer));
 
     // crawl the DOM for links and store in a queue

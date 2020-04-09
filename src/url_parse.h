@@ -13,7 +13,6 @@ typedef struct uri{
     char path[1000];
 } uri_t;
 
-
 uri_t *parse_uri(char *url);
 
 #endif
