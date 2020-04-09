@@ -28,7 +28,7 @@ int queue_check(deque_t *fetched_links, const char *href_value);
 
 void merge(char *b_auth, char *b_path, char *r_path, char *t);
 
-void rfc_func(char *b_auth, char *b_path, const char *href_value, char *t);
+void relative_resolution(char *b_auth, char *b_path, const char *href_value, char *t);
 
 void build_t(char *t, char *scheme, char *auth, char *path);
 
